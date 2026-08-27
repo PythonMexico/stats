@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>stats — Telemetría & Observabilidad</title>
+  <!-- Metadatos de OpenGraph & Tarjeta Social Dinámica -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Proyectos & Herramientas Open Source — Telemetría Oficial" />
+  <meta property="og:description" content="Dashboard en tiempo real de telemetría, observabilidad, adopción y matriz técnica de proyectos de software abierto." />
+  <meta property="og:image" content="og-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Proyectos & Herramientas Open Source — Telemetría Oficial" />
+  <meta name="twitter:description" content="Dashboard en tiempo real de telemetría, observabilidad, adopción y matriz técnica de proyectos de software abierto." />
+  <meta name="twitter:image" content="og-preview.png" />
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -126,6 +136,10 @@
           <span class="hidden md:inline-block px-2 py-0.5 bg-zinc-100 text-zinc-800 font-mono text-[10px] font-bold border border-zinc-300" id="versionBadgeHeader">v1.0.0</span>
         </div>
         <div class="flex items-center gap-3 font-mono text-xs">
+          <a href="share.html" class="flex items-center gap-1.5 text-zinc-900 bg-zinc-100 hover:bg-zinc-200 px-3 py-1 border border-zinc-300 font-bold transition-colors shadow-sm">
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-zinc-700"></i>
+            <span>Captura Social</span>
+          </a>
           <div class="flex items-center gap-1.5 text-zinc-800 bg-zinc-50 hover:bg-zinc-100 px-3 py-1 border border-zinc-300 font-bold transition-colors">
             <i data-lucide="git-pull-request" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
             <span id="kpi-prs">- PRs</span>

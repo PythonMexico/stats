@@ -31,6 +31,15 @@ jobs:
         run: |
           python3 update_metrics.py
 
+      - name: Install Playwright Browsers & Dependencies
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Generate Social Preview Card (og-preview.png)
+        run: |
+          python3 generate_preview.py
+
       - name: Deploy to GitHub Pages Branch (gh-pages)
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -41,4 +50,4 @@ jobs:
           force_orphan: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'deploy(telemetry): auto-publish latest metrics to gh-pages [skip ci]'
+          commit_message: 'deploy(telemetry): auto-publish latest metrics & social preview to gh-pages [skip ci]'

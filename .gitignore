@@ -12,6 +12,7 @@ ENV/
 
 # Telemetry Runtime Artifacts (Generated on CI/CD & deployed to gh-pages)
 data.json
+og-preview.png
 
 # Operating System & IDE Artifacts
 .DS_Store

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-950 text-zinc-900 antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenGraph & Social Share Card — GitHub Stats Engine</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- dom-to-image-more para exportación vectorial/raster exacta y fiel al DOM -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/3.3.0/dom-to-image-more.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Estilos inline forzados para badges en renderizado de captura */
+    .badge-stack {
+      display: inline-flex !important;
+      align-items: center !important;
+      padding: 2px 6px !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      border-radius: 0px !important;
+      line-height: 1 !important;
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col items-center justify-center p-4 md:p-8 bg-zinc-950">
+
+  <!-- ── BARRA DE HERRAMIENTAS DE CAPTURA ── -->
+  <header class="w-full max-w-[1200px] mb-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 transition-colors">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+        <span>Volver al Dashboard</span>
+      </a>
+      <span class="text-zinc-500 hidden sm:inline">|</span>
+      <span class="text-zinc-400 hidden sm:inline">FORMATO RECOMENDADO: 1200 × 630 px (Twitter/X, LinkedIn, OpenGraph)</span>
+    </div>
+
+    <button id="btnDownloadCard" onclick="downloadShareCard()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold tracking-wider uppercase transition-all shadow-lg hover:shadow-emerald-500/20">
+      <i data-lucide="camera" class="w-4 h-4"></i>
+      <span>Descargar Imagen PNG</span>
+    </button>
+  </header>
+
+  <!-- ── SOCIAL SHARE CARD (DIMENSIONES EXACTAS 1200x630 PX) ── -->
+  <div class="w-full flex justify-center overflow-x-auto pb-8">
+    <div id="shareCard" style="width: 1200px; height: 630px; min-width: 1200px; min-height: 630px;" class="bg-white border border-zinc-300 p-10 flex flex-col justify-between shadow-2xl relative select-none box-border">
+
+      <!-- Decoración de Borde Superior Suizo -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-zinc-950 flex">
+        <div class="w-1/3 bg-[#1e3a8a]"></div>
+        <div class="w-1/3 bg-[#046a38]"></div>
+        <div class="w-1/3 bg-[#b45309]"></div>
+      </div>
+
+      <!-- 1. HEADER DE LA TARJETA -->
+      <div class="flex items-start justify-between border-b border-zinc-200 pb-5 pt-1">
+        <div class="space-y-1">
+          <div class="flex items-center gap-3">
+            <div class="font-mono text-3xl font-black tracking-tighter flex items-center leading-none">
+              <span id="brandPrefix" class="text-emerald-600">shell</span>
+              <span id="brandMiddle" class="text-zinc-950">aquiles</span>
+              <span id="brandSuffix" class="text-rose-500">.org</span>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-100 text-zinc-800 font-mono text-xs font-bold border border-zinc-300" id="cardVersion">v1.0.0</span>
+          </div>
+          <div class="font-mono text-xs text-zinc-500 flex items-center gap-2 pt-1">
+            <span>PROYECTOS & HERRAMIENTAS OPEN SOURCE</span>
+            <span class="text-zinc-300">•</span>
+            <span id="cardUserHandle" class="text-zinc-900 font-bold">@shellaquiles</span>
+          </div>
+        </div>
+
+        <!-- Badge de Antigüedad -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 font-mono text-right">
+          <div class="text-[10px] text-zinc-500 font-bold uppercase">Trayectoria</div>
+          <div class="text-xs font-black text-zinc-950 mt-0.5" id="cardTagline">ACTIVO DESDE 2025</div>
+        </div>
+      </div>
+
+      <!-- 2. FILA COMPACTA DE KPIS (4 CAJAS) -->
+      <div class="grid grid-cols-4 gap-3 font-mono my-3">
+
+        <!-- KPI: Proyectos -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] text-zinc-500 font-bold uppercase">Proyectos</div>
+            <div class="text-xl font-black text-zinc-950 leading-none mt-1" id="kpi-repos">-</div>
+          </div>
+          <i data-lucide="layers" class="w-4 h-4 text-zinc-700"></i>
+        </div>
+
+        <!-- KPI: Commits -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] text-blue-900 font-bold uppercase">Commits</div>
+            <div class="text-xl font-black text-blue-900 leading-none mt-1" id="kpi-commits">-</div>
+          </div>
+          <i data-lucide="git-commit" class="w-4 h-4 text-[#1e3a8a]"></i>
+        </div>
+
+        <!-- KPI: Comunidad (Stars + Forks) -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] text-amber-700 font-bold uppercase">Comunidad</div>
+            <div class="text-xl font-black text-zinc-950 leading-none mt-1 flex items-baseline gap-1.5">
+              <span id="kpi-stars">-</span>
+              <span class="text-[11px] font-normal text-zinc-500" id="kpi-forks">- forks</span>
+            </div>
+          </div>
+          <i data-lucide="star" class="w-4 h-4 text-amber-600 fill-amber-600"></i>
+        </div>
+
+        <!-- KPI: Clones -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] text-emerald-800 font-bold uppercase">Clones Recientes</div>
+            <div class="text-xl font-black text-emerald-800 leading-none mt-1" id="kpi-clones">-</div>
+          </div>
+          <i data-lucide="download" class="w-4 h-4 text-[#046a38]"></i>
+        </div>
+
+      </div>
+
+      <!-- 3. MATRIZ TÉCNICA DE TELEMETRÍA (TABLA CONSOLIDADA) -->
+      <div class="border border-zinc-300 bg-white font-mono shadow-sm">
+        <div class="px-4 py-2 border-b border-zinc-200 flex items-center justify-between bg-zinc-50">
+          <div class="flex items-center gap-2">
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
+            <span class="text-xs font-bold text-zinc-950 uppercase tracking-widest">Matriz Técnica de Telemetría</span>
+          </div>
+          <span class="text-[9px] text-zinc-500 font-bold tracking-wider uppercase">Métricas Consolidadas</span>
+        </div>
+
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-zinc-300 text-[10px] text-zinc-500 uppercase tracking-wider bg-white">
+              <th class="p-2">
+                <div class="flex items-center gap-1"><i data-lucide="folder-git-2" class="w-3 h-3 text-zinc-400"></i><span>Proyecto</span></div>
+              </th>
+              <th class="p-2">
+                <div class="flex items-center gap-1"><i data-lucide="code-2" class="w-3 h-3 text-zinc-400"></i><span>Stack</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="star" class="w-3 h-3 text-zinc-400"></i><span>Stars</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="git-fork" class="w-3 h-3 text-zinc-400"></i><span>Forks</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="download" class="w-3 h-3 text-zinc-400"></i><span>Clones</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="eye" class="w-3 h-3 text-zinc-400"></i><span>Visitas</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="git-commit" class="w-3 h-3 text-zinc-400"></i><span>Commits</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="tag" class="w-3 h-3 text-zinc-400"></i><span>Releases</span></div>
+              </th>
+              <th class="p-2 text-right">
+                <div class="flex items-center justify-end gap-1"><i data-lucide="git-pull-request" class="w-3 h-3 text-zinc-400"></i><span>PRs</span></div>
+              </th>
+              <th class="p-2">
+                <div class="flex items-center gap-1"><i data-lucide="scale" class="w-3 h-3 text-zinc-400"></i><span>Licencia</span></div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-200 text-xs" id="cardTableBody">
+            <!-- Render dinámico -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4. FOOTER INSTITUCIONAL DE LA TARJETA -->
+      <div class="flex items-center justify-between border-t border-zinc-200 pt-2.5 font-mono text-xs text-zinc-500">
+        <div class="flex items-center gap-2">
+          <i data-lucide="terminal" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
+          <span class="font-bold text-zinc-900" id="cardFooterTarget">shellaquiles</span>
+          <span class="text-zinc-300">•</span>
+          <span>Impulsado por <strong class="text-zinc-950">shellaquiles/stats</strong></span>
+        </div>
+        <div class="flex items-center gap-2 text-zinc-700 font-bold">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-zinc-500"></i>
+          <span id="cardWebsiteUrl">shellaquiles.org</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── HIDRATACIÓN Y SCRIPT DE DESCARGA ── -->
+  <script>
+    function getLangBadge(lang) {
+      if (lang === 'Python') return 'bg-blue-50 text-blue-900 border-blue-200';
+      if (lang === 'JavaScript' || lang === 'TypeScript') return 'bg-amber-50 text-amber-900 border-amber-300';
+      if (lang === 'Shell') return 'bg-emerald-50 text-emerald-900 border-emerald-300';
+      if (lang === 'CSS' || lang === 'HTML') return 'bg-zinc-100 text-zinc-900 border-zinc-300';
+      return 'bg-zinc-100 text-zinc-700 border-zinc-200';
+    }
+
+    async function loadCardData() {
+      try {
+        const res = await fetch('data.json');
+        if (!res.ok) throw new Error('data.json no encontrado');
+        const payload = await res.json();
+
+        const meta = payload.meta || {};
+        const summary = payload.summary || {};
+        const repos = payload.repos || [];
+
+        // 1. Branding & Identidad
+        if (meta.brand) {
+          const bp = document.getElementById('brandPrefix');
+          const bm = document.getElementById('brandMiddle');
+          const bs = document.getElementById('brandSuffix');
+          const ct = document.getElementById('cardTagline');
+
+          if (bp) {
+            bp.innerText = meta.brand.prefix || '';
+            if (meta.brand.prefix_color) bp.style.color = meta.brand.prefix_color;
+          }
+          if (bm) bm.innerText = meta.brand.middle || '';
+          if (bs) {
+            bs.innerText = meta.brand.suffix || '';
+            if (meta.brand.suffix_color) bs.style.color = meta.brand.suffix_color;
+          }
+          if (ct) ct.innerText = meta.brand.tagline || 'ECOSISTEMA OPEN SOURCE';
+        }
+
+        if (meta.target) {
+          const uh = document.getElementById('cardUserHandle');
+          const ft = document.getElementById('cardFooterTarget');
+          if (uh) uh.innerText = `@${meta.target}`;
+          if (ft) ft.innerText = meta.target;
+        }
+
+        if (meta.version) {
+          const cv = document.getElementById('cardVersion');
+          if (cv) cv.innerText = meta.version.startsWith('v') ? meta.version : `v${meta.version}`;
+        }
+
+        if (meta.links?.website) {
+          const cw = document.getElementById('cardWebsiteUrl');
+          if (cw) {
+            try {
+              const url = new URL(meta.links.website);
+              cw.innerText = url.hostname;
+            } catch (e) {
+              cw.innerText = meta.links.website;
+            }
+          }
+        }
+
+        // 2. Poblar KPIs de las 4 cajas
+        if (summary.total_repos !== undefined) document.getElementById('kpi-repos').innerText = summary.total_repos;
+        if (summary.total_commits !== undefined) document.getElementById('kpi-commits').innerText = summary.total_commits;
+        if (summary.total_stars !== undefined) document.getElementById('kpi-stars').innerText = summary.total_stars;
+        if (summary.total_forks !== undefined) document.getElementById('kpi-forks').innerText = `+${summary.total_forks} forks`;
+        if (summary.total_clones_14d !== undefined) document.getElementById('kpi-clones').innerText = summary.total_clones_14d;
+
+        // 3. Render Matriz en la Tarjeta
+        const tbody = document.getElementById('cardTableBody');
+        if (tbody) {
+          tbody.innerHTML = repos.map(r => `
+            <tr class="hover:bg-zinc-50 transition-colors">
+              <td class="p-2 font-bold">
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="${r.icon || 'box'}" class="w-3.5 h-3.5 text-zinc-700 shrink-0"></i>
+                  <span class="text-zinc-950">${r.name}</span>
+                  ${r.pages_url ? `<i data-lucide="globe" class="w-3 h-3 text-emerald-700"></i>` : ''}
+                </div>
+              </td>
+              <td class="p-2">
+                <span class="badge-stack ${getLangBadge(r.language)}">${r.language}</span>
+              </td>
+              <td class="p-2 text-right font-black text-zinc-900">${r.stars}</td>
+              <td class="p-2 text-right font-black text-zinc-900">${r.forks}</td>
+              <td class="p-2 text-right font-black text-emerald-800">${r.clones_14d}</td>
+              <td class="p-2 text-right font-black text-blue-900">${r.views_14d}</td>
+              <td class="p-2 text-right font-black text-zinc-900">${r.commits}</td>
+              <td class="p-2 text-right font-black text-zinc-900">${r.releases}</td>
+              <td class="p-2 text-right font-black text-zinc-700">${r.prs}</td>
+              <td class="p-2">
+                <span class="badge-stack bg-emerald-50 text-emerald-900 border border-emerald-300">${r.license}</span>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        if (window.lucide) lucide.createIcons();
+
+      } catch (err) {
+        console.error('Error cargando telemetría para social card:', err);
+      }
+    }
+
+    // ── DESCARGA DE IMAGEN PNG FIEL AL DOM ──
+    async function downloadShareCard() {
+      const card = document.getElementById('shareCard');
+      const btn = document.getElementById('btnDownloadCard');
+      if (!card) return;
+
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>Generando captura...</span>';
+      btn.disabled = true;
+
+      try {
+        // Escala 2x para resolución Retina nítida (1200x630 -> 2400x1260)
+        const scale = 2;
+        const dataUrl = await domtoimage.toPng(card, {
+          width: 1200 * scale,
+          height: 630 * scale,
+          style: {
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            width: '1200px',
+            height: '630px'
+          }
+        });
+
+        const link = document.createElement('a');
+        link.download = 'shellaquiles-stats-share.png';
+        link.href = dataUrl;
+        link.click();
+      } catch (err) {
+        console.error('Error con dom-to-image:', err);
+        alert('Hubo un problema al exportar. Puedes tomar una captura de pantalla directa.');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    loadCardData();
+  </script>
+</body>
+</html>
