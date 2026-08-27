@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estadísticas de proyectos públicos por @shellaquiles en GitHub</title>
+  <title>@shellaquiles | Stats GitHub</title>
 
   <!-- OpenGraph / WhatsApp / Telegram / Facebook -->
   <meta property="og:type" content="website" />
@@ -601,14 +601,14 @@
     const handle  = meta.target || 'usuario';
 
     // ── Hydrate handles & Avatar ──────────────────────────────
-    document.title = `Estadísticas de proyectos públicos por @${handle} en GitHub`;
+    document.title = `@${handle} | Stats GitHub`;
     const descText = `Descubre el alcance real de los proyectos de código abierto de @${handle}. ¿Cuánto impacto tienen tus repositorios? Genera tu dashboard gratis con un fork.`;
     const ogTitleEl = document.getElementById('og-title');
-    if (ogTitleEl) ogTitleEl.setAttribute('content', document.title);
+    if (ogTitleEl) ogTitleEl.setAttribute('content', `Estadísticas de proyectos públicos por @${handle} en GitHub`);
     const ogDescEl = document.getElementById('og-desc');
     if (ogDescEl) ogDescEl.setAttribute('content', descText);
     const twTitleEl = document.getElementById('twitter-title');
-    if (twTitleEl) twTitleEl.setAttribute('content', document.title);
+    if (twTitleEl) twTitleEl.setAttribute('content', `Estadísticas de proyectos públicos por @${handle} en GitHub`);
     const twDescEl = document.getElementById('twitter-desc');
     if (twDescEl) twDescEl.setAttribute('content', descText);
 
