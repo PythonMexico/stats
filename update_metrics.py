@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GitHub Telemetry and Metrics Extraction Engine."""
+"""GitHub Telemetry and Metrics Extraction Engine with Robust Error Handling."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import subprocess
+import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Final, Optional
@@ -46,6 +47,24 @@ REFERRER_CHANNELS: Final[tuple[tuple[str, str, str], ...]] = (
 )
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CUSTOM EXCEPTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+class TelemetryError(Exception):
+    """Base domain exception for telemetry pipeline operations."""
+
+
+class GitHubCLIError(TelemetryError):
+    """Raised when GitHub CLI operations fail critically."""
+
+
+class ConfigurationError(TelemetryError):
+    """Raised when configuration parsing or validation fails."""
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONFIGURATION MODELS
+# ─────────────────────────────────────────────────────────────────────────────
 @dataclass(slots=True, frozen=True)
 class BrandConfig:
     """Branding presentation attributes for the dashboard."""
@@ -91,8 +110,11 @@ class ExtractorConfig:
             try:
                 with file_path.open("r", encoding="utf-8") as f:
                     file_data = json.load(f)
-            except (json.JSONDecodeError, OSError) as exc:
-                logger.warning("Failed loading config file '%s': %s", file_path, exc)
+            except json.JSONDecodeError as exc:
+                logger.error("JSON syntax error in config '%s': %s", file_path, exc)
+                raise ConfigurationError(f"Invalid JSON in config file: {file_path}") from exc
+            except OSError as exc:
+                logger.warning("Could not open config file '%s': %s", file_path, exc)
 
         target = os.getenv("STATS_TARGET") or file_data.get("target", "shellaquiles")
         is_org = (
@@ -151,6 +173,9 @@ class ExtractorConfig:
         )
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CORE TELEMETRY EXTRACTOR
+# ─────────────────────────────────────────────────────────────────────────────
 class GitHubTelemetryExtractor:
     """Extracts, normalizes, and aggregates telemetry metrics from GitHub."""
 
@@ -160,24 +185,35 @@ class GitHubTelemetryExtractor:
         self.config = config
 
     @staticmethod
-    def _gh_api(endpoint: str) -> Any:
-        """Call GitHub API via GitHub CLI and return parsed JSON."""
-        return GitHubTelemetryExtractor._run_gh("api", endpoint)
-
-    @staticmethod
     def _run_gh(*args: str) -> Any:
-        """Run gh CLI command with structured error suppression."""
+        """Execute gh CLI command with structured error diagnostics."""
         try:
             res = subprocess.run(
                 ["gh", *args],
                 check=True,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
                 text=True,
+                timeout=30,
             )
             return json.loads(res.stdout)
-        except (subprocess.CalledProcessError, json.JSONDecodeError):
+        except subprocess.TimeoutExpired as exc:
+            logger.error("GitHub CLI command timed out: %s", " ".join(args))
             return None
+        except subprocess.CalledProcessError as exc:
+            logger.debug("gh command failed ('%s'): %s", " ".join(args), exc.stderr.strip())
+            return None
+        except json.JSONDecodeError as exc:
+            logger.warning("Failed parsing JSON output from gh command '%s': %s", " ".join(args), exc)
+            return None
+        except FileNotFoundError:
+            logger.critical("GitHub CLI ('gh') is not installed or not in system PATH.")
+            raise GitHubCLIError("GitHub CLI ('gh') binary was not found.") from None
+
+    @classmethod
+    def _gh_api(cls, endpoint: str) -> Any:
+        """Call GitHub API via GitHub CLI and return parsed JSON."""
+        return cls._run_gh("api", endpoint)
 
     @staticmethod
     def normalize_referrer(raw_name: Optional[str]) -> tuple[str, str]:
@@ -208,7 +244,7 @@ class GitHubTelemetryExtractor:
             "100",
         )
         if not isinstance(payload, list):
-            logger.warning("Repository discovery failed or returned empty payload.")
+            logger.warning("Repository discovery returned no valid repositories or failed.")
             return []
 
         discovered = [
@@ -239,7 +275,7 @@ class GitHubTelemetryExtractor:
         return None, False, "border-t-zinc-600", "folder-git-2"
 
     def fetch_repository_metrics(self, repo_name: str) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
-        """Collect all metrics for a single repository."""
+        """Collect all metrics for a single repository with individual fallback isolation."""
         full_repo = f"{self.config.target}/{repo_name}"
 
         info = self._run_gh(
@@ -250,6 +286,7 @@ class GitHubTelemetryExtractor:
             "name,description,url,homepageUrl,createdAt,updatedAt,pushedAt,stargazerCount,forkCount,diskUsage,licenseInfo,repositoryTopics,primaryLanguage",
         ) or {}
 
+        # Traffic endpoints require repo push permissions, gracefully handle empty responses
         views_data = self._gh_api(f"repos/{full_repo}/traffic/views") or {}
         clones_data = self._gh_api(f"repos/{full_repo}/traffic/clones") or {}
         raw_referrers = self._gh_api(f"repos/{full_repo}/traffic/popular/referrers") or []
@@ -257,12 +294,14 @@ class GitHubTelemetryExtractor:
         prs = self._run_gh("pr", "list", "-R", full_repo, "--state", "all", "--json", "number") or []
         contribs = self._gh_api(f"repos/{full_repo}/contributors") or []
 
-        valid_contribs = [c for c in contribs if not self.is_bot(c.get("login"))]
+        valid_contribs = [c for c in contribs if isinstance(c, dict) and not self.is_bot(c.get("login"))]
         total_commits = sum(c.get("contributions", 0) for c in valid_contribs)
 
         # Referrer aggregation
         normalized_refs: dict[str, dict[str, Any]] = {}
         for r in raw_referrers:
+            if not isinstance(r, dict):
+                continue
             canon, icon = self.normalize_referrer(r.get("referrer"))
             entry = normalized_refs.setdefault(canon, {"name": canon, "views": 0, "uniques": 0, "icon": icon})
             entry["views"] += r.get("count", 0)
@@ -270,7 +309,7 @@ class GitHubTelemetryExtractor:
 
         primary_lang = (info.get("primaryLanguage") or {}).get("name", "Other")
         badge, featured, accent_color, icon = self._resolve_visuals(repo_name, primary_lang)
-        topics = [t["name"] for t in (info.get("repositoryTopics") or [])]
+        topics = [t["name"] for t in (info.get("repositoryTopics") or []) if isinstance(t, dict) and "name" in t]
         license_name = (info.get("licenseInfo") or {}).get("name", "None")
         clean_license = (
             license_name.replace(" License", "")
@@ -294,8 +333,8 @@ class GitHubTelemetryExtractor:
             "clones_uniques_14d": clones_data.get("uniques", 0),
             "views_14d": views_data.get("count", 0),
             "uniques_14d": views_data.get("uniques", 0),
-            "releases": len(releases),
-            "prs": len(prs),
+            "releases": len(releases) if isinstance(releases, list) else 0,
+            "prs": len(prs) if isinstance(prs, list) else 0,
             "featured": featured,
             "badge": badge,
             "icon": icon,
@@ -307,40 +346,47 @@ class GitHubTelemetryExtractor:
         return repo_dict, list(normalized_refs.values()), valid_contribs
 
     def run(self) -> None:
-        """Execute full extraction pipeline and export data.json."""
+        """Execute full extraction pipeline and export data.json with file I/O safety."""
         repositories = self.discover_repositories()
+        if not repositories:
+            logger.warning("No public repositories discovered. Writing empty dataset structure.")
+
         repos_data: list[dict[str, Any]] = []
         global_referrers: dict[str, dict[str, Any]] = {}
         global_contributors: dict[str, dict[str, Any]] = {}
 
         for repo_name in repositories:
             logger.info("Processing repository: %s/%s...", self.config.target, repo_name)
-            repo_item, repo_refs, repo_contribs = self.fetch_repository_metrics(repo_name)
-            repos_data.append(repo_item)
+            try:
+                repo_item, repo_refs, repo_contribs = self.fetch_repository_metrics(repo_name)
+                repos_data.append(repo_item)
 
-            for ref in repo_refs:
-                entry = global_referrers.setdefault(
-                    ref["name"], {"name": ref["name"], "views": 0, "uniques": 0, "icon": ref["icon"]}
-                )
-                entry["views"] += ref["views"]
-                entry["uniques"] += ref["uniques"]
+                for ref in repo_refs:
+                    entry = global_referrers.setdefault(
+                        ref["name"], {"name": ref["name"], "views": 0, "uniques": 0, "icon": ref["icon"]}
+                    )
+                    entry["views"] += ref["views"]
+                    entry["uniques"] += ref["uniques"]
 
-            for c in repo_contribs:
-                login = c["login"]
-                entry = global_contributors.setdefault(
-                    login,
-                    {
-                        "login": login,
-                        "avatar_url": c.get("avatar_url"),
-                        "html_url": c.get("html_url"),
-                        "contributions": 0,
-                        "repos_count": 0,
-                        "repos": [],
-                    },
-                )
-                entry["contributions"] += c.get("contributions", 0)
-                entry["repos_count"] += 1
-                entry["repos"].append(repo_name)
+                for c in repo_contribs:
+                    login = c["login"]
+                    entry = global_contributors.setdefault(
+                        login,
+                        {
+                            "login": login,
+                            "avatar_url": c.get("avatar_url"),
+                            "html_url": c.get("html_url"),
+                            "contributions": 0,
+                            "repos_count": 0,
+                            "repos": [],
+                        },
+                    )
+                    entry["contributions"] += c.get("contributions", 0)
+                    entry["repos_count"] += 1
+                    entry["repos"].append(repo_name)
+            except Exception as exc:
+                logger.error("Unexpected error processing '%s': %s", repo_name, exc, exc_info=True)
+                continue
 
         sorted_contributors = sorted(
             global_contributors.values(), key=lambda x: x["contributions"], reverse=True
@@ -375,21 +421,38 @@ class GitHubTelemetryExtractor:
             "contributors": sorted_contributors,
         }
 
-        with self.config.output_json.open("w", encoding="utf-8") as f:
-            json.dump(payload, f, indent=2, ensure_ascii=False)
-
-        logger.info("✅ Telemetry exported successfully to %s", self.config.output_json)
+        try:
+            self.config.output_json.parent.mkdir(parents=True, exist_ok=True)
+            with self.config.output_json.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, ensure_ascii=False)
+            logger.info("✅ Telemetry exported successfully to %s", self.config.output_json)
+        except OSError as exc:
+            logger.critical("Failed writing output file '%s': %s", self.config.output_json, exc)
+            raise TelemetryError(f"Could not write destination file: {self.config.output_json}") from exc
 
 
 def main() -> None:
-    """CLI entrypoint."""
+    """CLI entrypoint with graceful exit codes."""
     parser = argparse.ArgumentParser(description="Extract GitHub telemetry into data.json.")
     parser.add_argument("--config", "-c", type=Path, default=None, help="Path to config.json")
     args = parser.parse_args()
 
-    config = ExtractorConfig.from_source(config_path=args.config)
-    extractor = GitHubTelemetryExtractor(config=config)
-    extractor.run()
+    try:
+        config = ExtractorConfig.from_source(config_path=args.config)
+        extractor = GitHubTelemetryExtractor(config=config)
+        extractor.run()
+    except ConfigurationError as exc:
+        logger.error("Configuration error: %s", exc)
+        sys.exit(1)
+    except GitHubCLIError as exc:
+        logger.error("GitHub CLI runtime error: %s", exc)
+        sys.exit(2)
+    except TelemetryError as exc:
+        logger.error("Telemetry engine error: %s", exc)
+        sys.exit(3)
+    except KeyboardInterrupt:
+        logger.info("Operation interrupted by user.")
+        sys.exit(130)
 
 
 if __name__ == "__main__":
