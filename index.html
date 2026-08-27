@@ -1,805 +1,836 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-zinc-100">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Metadatos de OpenGraph & Tarjeta Social Dinámica -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Proyectos & Herramientas Open Source — Telemetría Oficial" />
-  <meta property="og:description" content="Dashboard en tiempo real de telemetría, observabilidad, adopción y matriz técnica de proyectos de software abierto." />
-  <meta property="og:image" content="og-preview.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Proyectos & Herramientas Open Source — Telemetría Oficial" />
-  <meta name="twitter:description" content="Dashboard en tiempo real de telemetría, observabilidad, adopción y matriz técnica de proyectos de software abierto." />
-  <meta name="twitter:image" content="og-preview.png" />
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Fuentes Institucionales Suizas -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js & Lucide Icons -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Huella Digital — shellaquiles.org</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      letter-spacing: -0.01em;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1e3a8a; --green: #046a38; --amber: #b45309;
+      --ink: #09090b; --paper: #f8fafc;
+      --zinc-100: #f4f4f5; --zinc-200: #e4e4e7;
+      --zinc-300: #d4d4d8; --zinc-500: #71717a; --zinc-700: #3f3f46;
     }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
+    body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+    /* TOP BAR */
+    .topbar {
+      border-bottom: 1px solid var(--zinc-300); background: #fff;
+      padding: 0 2rem; height: 52px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
     }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    .topbar-brand {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 700;
+      letter-spacing: 0; text-transform: none; color: var(--ink);
+      text-decoration: none; display: flex; align-items: center; gap: 0;
     }
-    ::-webkit-scrollbar-track {
-      background: #f4f4f5;
+    .topbar-center {
+      display: flex; align-items: center; gap: 0.4rem; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; font-weight: 700; color: var(--ink); text-decoration: none;
+      background: var(--zinc-100); border: 1px solid var(--zinc-300); padding: 0.2rem 0.6rem;
+      transition: all 0.15s;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #71717a;
+    .topbar-center:hover { border-color: var(--navy); color: var(--navy); background: #fff; }
+    .topbar-center i { width: 13px; height: 13px; }
+    .topbar-nav { display: flex; gap: 1.5rem; align-items: center; }
+    .topbar-nav a {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--zinc-500);
+      text-decoration: none; transition: color 0.15s;
     }
+    .topbar-nav a:hover { color: var(--navy); }
+    .topbar-nav a.active { color: var(--navy); border-bottom: 2px solid var(--navy); padding-bottom: 1px; }
+
+    /* ORG HERO */
+    .org-hero {
+      background: #fff; border-bottom: 1px solid var(--zinc-200);
+      padding: 3rem 2rem;
+    }
+    .org-hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 380px; gap: 3rem; align-items: center;
+    }
+    @media (max-width: 860px) { .org-hero-inner { grid-template-columns: 1fr; } }
+
+    .org-title-wrap {
+      display: flex; align-items: center; justify-content: flex-start; gap: 1.25rem;
+      margin-bottom: 0.4rem;
+    }
+    .org-avatar-wrap {
+      flex-shrink: 0;
+    }
+    .org-avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      border: 1px solid var(--zinc-300); background: var(--zinc-100);
+      display: block; object-fit: cover;
+    }
+    .org-hero-meta h1 {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--ink); line-height: 1.1; margin: 0;
+    }
+    .org-hero-meta h1 em { font-style: normal; color: var(--navy); }
+    .org-hero-meta .subtitle {
+      font-size: 0.875rem; color: var(--zinc-500); margin-bottom: 2rem; line-height: 1.5; margin-top: 0.4rem;
+    }
+
+    .org-kpis {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      border: 1px solid var(--zinc-200); background: var(--zinc-200);
+    }
+    .org-kpi {
+      background: #fff; padding: 1rem 0.75rem; text-align: center;
+    }
+    .org-kpi-val {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700;
+      color: var(--ink); display: block; line-height: 1;
+    }
+    .org-kpi-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--zinc-500);
+      margin-top: 0.3rem; display: flex; align-items: center; justify-content: center; gap: 0.2rem;
+    }
+    .org-kpi-label i { width: 10px; height: 10px; }
+
+    /* ORG RADAR CANVAS */
+    .org-radar-wrap {
+      position: relative; width: 100%; max-width: 380px;
+      height: 360px;
+    }
+    .org-radar-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
+    .org-radar-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--zinc-500);
+      text-align: center; margin-top: 0.5rem;
+    }
+
+    /* SECTION DIVIDER */
+    .section-header {
+      max-width: 1200px; margin: 2.5rem auto 0; padding: 0 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-header h2 {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--zinc-500);
+      white-space: nowrap;
+    }
+    .section-header-line { flex: 1; height: 1px; background: var(--zinc-200); }
+
+    /* AXIS LEGEND */
+    .axis-legend {
+      max-width: 1200px; margin: 1rem auto 0; padding: 0 2rem;
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+    .axis-item {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.63rem;
+      letter-spacing: 0.07em; text-transform: uppercase; color: var(--zinc-500);
+    }
+    .axis-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* REPO GRID */
+    .radar-grid {
+      max-width: 1200px; margin: 1.5rem auto; padding: 0 2rem 4rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.25rem;
+    }
+
+    /* REPO CARD */
+    .repo-card {
+      background: #fff; border: 1px solid var(--zinc-300);
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+    .repo-card:hover { border-color: var(--zinc-500); }
+
+    .card-header {
+      padding: 1.25rem 1.25rem 0.85rem; border-bottom: 1px solid var(--zinc-200);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;
+    }
+    .card-title-block { flex: 1; min-width: 0; }
+    .card-icon-wrap {
+      width: 34px; height: 34px; border: 1px solid var(--zinc-200); background: var(--zinc-100);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card-icon-wrap i { width: 16px; height: 16px; }
+    .card-name {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 700;
+      color: var(--ink); text-decoration: none;
+      display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-name:hover { color: var(--navy); }
+    .card-desc {
+      font-size: 0.75rem; color: var(--zinc-500); margin-top: 0.25rem; line-height: 1.45;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-meta-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px dashed var(--zinc-200);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--zinc-500);
+    }
+    .card-meta-item { display: flex; align-items: center; gap: 0.3rem; }
+    .card-meta-item i { width: 11px; height: 11px; color: var(--zinc-400); }
+    .card-meta-item strong { color: var(--ink); }
+
+    .card-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.12rem 0.4rem;
+      border: 1px solid currentColor; display: inline-block;
+    }
+
+    .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--zinc-200); background: #fff; }
+    .stat-cell { padding: 0.75rem 0.4rem; text-align: center; border-right: 1px solid var(--zinc-200); }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 700; color: var(--ink); display: block; }
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--zinc-500); margin-top: 0.2rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.2rem;
+    }
+    .stat-label i { width: 10px; height: 10px; }
+
+    .card-footer {
+      padding: 0.65rem 1.25rem; background: var(--zinc-100);
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    }
+    .tag-list { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--zinc-700); background: #fff; border: 1px solid var(--zinc-300); padding: 0.15rem 0.35rem; font-weight: 600;
+    }
+    .tag-colab {
+      background: #f0fdf4; border-color: #bbf7d0; color: #166534; display: flex; align-items: center; gap: 0.25rem;
+    }
+    .tag-colab i { width: 9px; height: 9px; color: #15803d; }
+    .card-link {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); text-decoration: none;
+      display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0;
+    }
+    .card-link i { width: 11px; height: 11px; }
+    .card-link:hover { text-decoration: underline; }
+
+    /* TABLE SECTION */
+    .table-section {
+      max-width: 1200px; margin: 0 auto 4rem; padding: 0 2rem;
+    }
+    .table-wrap {
+      background: #fff; border: 1px solid var(--zinc-300); font-family: 'JetBrains Mono', monospace;
+      overflow-x: auto;
+    }
+    .table-header {
+      padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--zinc-200); background: var(--zinc-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .table-title {
+      font-size: 0.75rem; font-weight: 700; color: var(--ink); text-transform: uppercase;
+      letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .table-title i { width: 14px; height: 14px; color: var(--navy); }
+    .table-badge {
+      font-size: 0.6rem; font-weight: 700; color: var(--zinc-500); text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .stats-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.72rem; }
+    .stats-table thead tr {
+      border-bottom: 1px solid var(--zinc-300); background: #fff;
+    }
+    .stats-table th {
+      padding: 0.65rem 0.85rem; font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--zinc-500); white-space: nowrap;
+    }
+    .stats-table th.num, .stats-table td.num { text-align: right; }
+    .stats-table td {
+      padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--zinc-200); color: var(--ink); white-space: nowrap;
+    }
+    .stats-table tbody tr:hover { background: #fafafa; }
+    .table-repo-link { font-weight: 700; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; }
+    .table-repo-link:hover { color: var(--navy); text-decoration: underline; }
+    .table-tag {
+      font-size: 0.58rem; text-transform: uppercase; padding: 0.1rem 0.3rem; border: 1px solid var(--zinc-300); background: var(--zinc-100);
+    }
+    .table-totals-row { background: var(--zinc-100) !important; font-weight: 700; border-top: 2px solid var(--zinc-300); }
+
+    /* CONTRIBUTORS SECTION */
+    .contrib-section {
+      max-width: 1200px; margin: 0 auto 5rem; padding: 0 2rem;
+    }
+    .contrib-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+    }
+    .contrib-card {
+      background: #fff; border: 1px solid var(--zinc-300); padding: 0.85rem 1rem;
+      display: flex; align-items: center; gap: 0.85rem; text-decoration: none;
+      transition: border-color 0.15s; font-family: 'JetBrains Mono', monospace;
+    }
+    .contrib-card:hover { border-color: var(--navy); }
+    .contrib-avatar {
+      width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--zinc-300); flex-shrink: 0;
+    }
+    .contrib-info { min-width: 0; flex: 1; }
+    .contrib-login {
+      font-size: 0.78rem; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .contrib-login:hover { color: var(--navy); }
+    .contrib-sub {
+      font-size: 0.62rem; color: var(--zinc-500); margin-top: 0.15rem;
+    }
+    .contrib-commits {
+      font-size: 0.65rem; font-weight: 700; color: var(--navy); margin-top: 0.2rem;
+    }
+
+    /* CTA BANNER & FOOTER */
+    .cta-section {
+      max-width: 1200px; margin: 0 auto 4rem; padding: 0 2rem;
+    }
+    .cta-card {
+      background: #fff; border: 1px solid var(--zinc-300); padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+      flex-wrap: wrap; font-family: 'JetBrains Mono', monospace;
+    }
+    .cta-text { max-width: 700px; }
+    .cta-title {
+      font-size: 0.8rem; font-weight: 700; color: var(--ink); text-transform: uppercase;
+      letter-spacing: 0.06em; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .cta-title i { width: 14px; height: 14px; color: var(--green); }
+    .cta-desc {
+      font-size: 0.72rem; color: var(--zinc-500); margin-top: 0.35rem; line-height: 1.5; font-family: 'Inter', sans-serif;
+    }
+    .cta-desc code {
+      background: var(--zinc-100); border: 1px solid var(--zinc-200); padding: 0.1rem 0.3rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink);
+    }
+    .cta-btn {
+      background: var(--ink); color: #fff; border: 1px solid var(--ink); padding: 0.55rem 1rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: background-color 0.15s;
+    }
+    .cta-btn:hover { background: #000; }
+    .cta-btn i { width: 13px; height: 13px; color: #4ade80; }
+
+    body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; padding-bottom: 50px; }
+
+    /* FOOTER (FIXED) */
+    .site-footer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      border-top: 1px solid var(--zinc-300); background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
+      padding: 0.65rem 2rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--zinc-500);
+    }
+    .site-footer-inner {
+      max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .site-footer a { color: var(--ink); text-decoration: none; font-weight: 700; }
+    .site-footer a:hover { color: var(--navy); text-decoration: underline; }
+
+    #loading {
+      text-align: center; padding: 6rem 2rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: var(--zinc-500); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="h-full text-zinc-900 antialiased selection:bg-zinc-900 selection:text-white flex flex-col">
+<body>
 
-  <div class="flex-1 flex overflow-hidden">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a class="topbar-brand" href="index3.html"><span style="color:#71717a;font-weight:400;">{{</span><span style="color:#22c55e;font-weight:700;">shell</span><span style="color:#09090b;font-weight:700;">aquiles</span><span style="color:#f43f5e;font-weight:700;">.org</span><span style="color:#71717a;font-weight:400;">}}</span></a>
 
-    <!-- ── SIDEBAR INSTITUCIONAL SUIZO ── -->
-    <aside class="w-64 border-r border-zinc-300 bg-white flex flex-col justify-between shrink-0 hidden md:flex">
-      <div class="p-6">
-        <!-- Logo / Marca Reactiva -->
-        <div class="flex items-center gap-2 mb-8">
-          <div class="w-4 h-4 bg-zinc-950"></div>
-          <a href="#" class="font-mono text-sm tracking-tighter uppercase font-bold text-zinc-950">
-            <span id="brandPrefix" class="text-emerald-700">open</span><span id="brandMiddle">source</span><span id="brandSuffix" class="text-rose-600">.stats</span>
-          </a>
-        </div>
+    <!-- Center User / Org GitHub Link -->
+    <a class="topbar-center" id="topbar-center-link" href="https://github.com/shellaquiles" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+        <path d="M9 18c-4.51 2-5-2-7-2"></path>
+      </svg>
+      <span id="topbar-center-user">@shellaquiles</span>
+    </a>
 
-        <nav class="space-y-1 font-mono">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-3 px-2">Navegación</div>
-          <a href="#metricas" data-target="metricas" class="nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs bg-zinc-900 text-white font-bold border border-zinc-900 transition-colors">
-            <div class="flex items-center gap-2">
-              <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-white"></i>
-              <span>Panorama Global</span>
-            </div>
-            <span class="nav-badge bg-zinc-800 text-zinc-200 px-1.5 py-0.2 text-[10px]" id="sidebar-repo-count">- REPOSITORIOS</span>
-          </a>
-          <a href="#catalogo" data-target="catalogo" class="nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-transparent">
-            <div class="flex items-center gap-2">
-              <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-zinc-500"></i>
-              <span>Catálogo de Proyectos</span>
-            </div>
-          </a>
-          <a href="#trafico" data-target="trafico" class="nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-transparent">
-            <div class="flex items-center gap-2">
-              <i data-lucide="compass" class="w-3.5 h-3.5 text-zinc-500"></i>
-              <span>Fuentes de Tráfico</span>
-            </div>
-            <span class="nav-badge bg-zinc-200 text-zinc-700 px-1.5 py-0.2 text-[10px]">CANALES</span>
-          </a>
-          <a href="#matriz" data-target="matriz" class="nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-transparent">
-            <div class="flex items-center gap-2">
-              <i data-lucide="database" class="w-3.5 h-3.5 text-zinc-500"></i>
-              <span>Matriz Técnica</span>
-            </div>
-          </a>
-          <a href="#colaboradores" data-target="colaboradores" class="nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-transparent">
-            <div class="flex items-center gap-2">
-              <i data-lucide="users" class="w-3.5 h-3.5 text-zinc-500"></i>
-              <span>Cuadro de Honor</span>
-            </div>
-            <span class="nav-badge bg-zinc-200 text-zinc-700 px-1.5 py-0.2 text-[10px]" id="kpi-contributors-count">- Colaboradores</span>
-          </a>
-        </nav>
-      </div>
+    <nav class="topbar-nav">
+      <a href="#catalogo">Proyectos</a>
+      <a href="#matriz">Stats Globales</a>
+      <a href="#colaboradores">Colaboradores</a>
+    </nav>
+  </header>
 
-      <div class="p-4 border-t border-zinc-200 font-mono text-[11px] space-y-2 bg-zinc-50/50">
-        <div class="flex items-center justify-between text-zinc-500">
-          <span>VERSIÓN</span>
-          <span class="px-1.5 py-0.2 bg-zinc-200 text-zinc-800 font-bold border border-zinc-300 text-[10px]" id="versionBadgeSidebar">v1.0.0</span>
-        </div>
-        <div class="flex items-center justify-between text-zinc-500">
-          <span>ESTADO</span>
-          <span class="inline-flex items-center gap-1.5 text-emerald-800 font-bold">
-            <span class="w-1.5 h-1.5 bg-emerald-600 rounded-none"></span> ACTIVO
-          </span>
-        </div>
-        <div class="flex items-center justify-between text-zinc-500">
-          <span>PIPELINE</span>
-          <span class="font-bold text-zinc-800" id="brandTagline">GITHUB ACTIONS</span>
-        </div>
-        <a href="#" id="btnGithubOrg" target="_blank" class="w-full mt-2 flex items-center justify-center gap-2 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-bold transition-colors">
-          <i data-lucide="github" class="w-3.5 h-3.5"></i>
-          <span>GitHub</span>
-        </a>
-      </div>
-    </aside>
-
-    <!-- ── CONTENEDOR PRINCIPAL ── -->
-    <main class="flex-1 overflow-y-auto flex flex-col bg-zinc-100 scroll-smooth" id="mainScrollContainer">
-
-      <!-- Header Superior -->
-      <header class="h-14 border-b border-zinc-300 bg-white flex items-center justify-between px-8 sticky top-0 z-20">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2">
-            <i data-lucide="layers" class="w-4 h-4 text-[#1e3a8a]"></i>
-            <h1 class="text-xs font-bold uppercase tracking-wider text-zinc-950 font-mono">Proyectos & Herramientas</h1>
-            <span class="text-xs text-zinc-500 font-mono" id="headerUserTarget">(@shellaquiles)</span>
-          </div>
-          <span class="hidden md:inline-block px-2 py-0.5 bg-zinc-100 text-zinc-800 font-mono text-[10px] font-bold border border-zinc-300" id="versionBadgeHeader">v1.0.0</span>
-        </div>
-        <div class="flex items-center gap-3 font-mono text-xs">
-          <a href="index2.html" class="flex items-center gap-1.5 text-zinc-900 bg-zinc-100 hover:bg-zinc-200 px-3 py-1 border border-zinc-300 font-bold transition-colors shadow-sm">
-            <i data-lucide="radar" class="w-3.5 h-3.5 text-zinc-700"></i>
-            <span>Huella Digital</span>
-          </a>
-          <a href="share.html" class="flex items-center gap-1.5 text-zinc-900 bg-zinc-100 hover:bg-zinc-200 px-3 py-1 border border-zinc-300 font-bold transition-colors shadow-sm">
-            <i data-lucide="share-2" class="w-3.5 h-3.5 text-zinc-700"></i>
-            <span>Captura Social</span>
-          </a>
-          <div class="flex items-center gap-1.5 text-zinc-800 bg-zinc-50 hover:bg-zinc-100 px-3 py-1 border border-zinc-300 font-bold transition-colors">
-            <i data-lucide="git-pull-request" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
-            <span id="kpi-prs">- PRs</span>
-          </div>
-          <div class="flex items-center gap-1.5 text-zinc-800 bg-zinc-50 hover:bg-zinc-100 px-3 py-1 border border-zinc-300 font-bold transition-colors">
-            <i data-lucide="tag" class="w-3.5 h-3.5 text-[#046a38]"></i>
-            <span id="kpi-releases">- Releases</span>
-          </div>
-        </div>
-      </header>
-
-      <div class="p-8 max-w-7xl w-full mx-auto space-y-8 flex-1">
-
-        <!-- ── HERO SECTION: PANORAMA INSTITUCIONAL ── -->
-        <div class="bg-white border border-zinc-300 p-6 md:p-8" id="metricas">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <div class="lg:col-span-7 space-y-4">
-              <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-zinc-100 text-zinc-800 text-[10px] font-mono font-bold uppercase tracking-widest border border-zinc-300">
-                <span class="w-2 h-2 bg-emerald-600"></span> <span id="heroTagline">ECOSISTEMA ACTIVO</span>
-              </div>
-              <h2 class="text-2xl md:text-3xl font-extrabold text-zinc-950 tracking-tight leading-tight">
-                Catálogo de Software, Herramientas & Colaboración
-              </h2>
-              <p class="text-zinc-600 text-xs md:text-sm leading-relaxed max-w-2xl">
-                Explora el ecosistema de aplicaciones, bibliotecas y herramientas públicas creadas para la comunidad, con métricas en tiempo real de adopción y desarrollo.
-              </p>
-
-              <!-- Mini Status Grid -->
-              <div class="grid grid-cols-3 gap-3 pt-2 font-mono text-xs">
-                <div class="p-3 bg-zinc-50 border border-zinc-200">
-                  <div class="text-[10px] text-zinc-500 font-bold uppercase">Popularidad</div>
-                  <div class="text-base font-black text-zinc-950 mt-0.5 flex items-center gap-1.5" id="kpi-stars">
-                    <span>-</span> <i data-lucide="star" class="w-3.5 h-3.5 text-amber-500 fill-amber-500"></i>
-                  </div>
-                  <div class="text-[10px] text-zinc-500 mt-0.5 flex items-center gap-1" id="kpi-forks">
-                    <span>-</span> <i data-lucide="git-fork" class="w-3 h-3 text-zinc-600"></i> forks
-                  </div>
-                </div>
-                <div class="p-3 bg-zinc-50 border border-zinc-200">
-                  <div class="text-[10px] text-zinc-500 font-bold uppercase">Clones Recientes</div>
-                  <div class="text-base font-black text-emerald-800 mt-0.5" id="kpi-clones-hero">-</div>
-                  <div class="text-[10px] text-zinc-500 mt-0.5" id="kpi-clones-uniques">- únicos</div>
-                </div>
-                <div class="p-3 bg-zinc-50 border border-zinc-200">
-                  <div class="text-[10px] text-zinc-500 font-bold uppercase">Commits</div>
-                  <div class="text-base font-black text-blue-900 mt-0.5" id="kpi-commits">-</div>
-                  <div class="text-[10px] text-zinc-500 mt-0.5">Histórico global</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Columna Derecha: Proyectos Destacados -->
-            <div class="lg:col-span-5 bg-zinc-50 p-5 border border-zinc-300 font-mono text-xs space-y-3" id="heroHighlightsBox">
-              <div class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider flex items-center justify-between border-b border-zinc-200 pb-2">
-                <span>PROYECTOS DESTACADOS</span>
-                <span class="text-emerald-800 font-bold">ALTA ACTIVIDAD</span>
-              </div>
-              <div class="space-y-2.5" id="highlightsList">
-                <div class="text-zinc-400 text-xs py-4 text-center">Cargando repositorios...</div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Barra Horizontal de Fuentes de Tráfico (Referrers) -->
-          <div class="mt-6 pt-4 border-t border-zinc-200" id="trafico">
-            <div class="flex flex-col md:flex-row md:items-center gap-3">
-              <div class="flex items-center gap-2 shrink-0 font-mono text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
-                <i data-lucide="compass" class="w-3.5 h-3.5 text-[#046a38]"></i>
-                <span>Fuentes de Tráfico:</span>
-              </div>
-              <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2.5 font-mono text-xs" id="referrersList"></div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ── 1. PROYECTOS PÚBLICOS (CATÁLOGO PRINCIPAL) ── -->
-        <div class="space-y-4" id="catalogo">
-          <div class="bg-white border border-zinc-300">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-3.5 border-b border-zinc-200 bg-zinc-50 gap-3">
-              <div class="flex items-center gap-2">
-                <i data-lucide="folder-git-2" class="w-4 h-4 text-[#1e3a8a]"></i>
-                <span class="font-mono text-xs font-bold text-zinc-900 uppercase tracking-widest">
-                  PROYECTOS PÚBLICOS
-                </span>
-                <span class="font-mono text-[9px] bg-zinc-100 text-zinc-700 border border-zinc-300 px-1.5 py-0.5 font-bold">ECOSISTEMA</span>
-              </div>
-              
-              <!-- Filtros Rápidos por Stack / Lenguaje -->
-              <div class="flex items-center gap-1.5 font-mono text-[11px]" id="filterContainer">
-                <span class="text-zinc-400 text-[10px] uppercase tracking-wider mr-1">Filtrar:</span>
-                <button onclick="filterProjects('all')" class="filter-btn px-2 py-0.5 bg-zinc-900 text-white font-bold border border-zinc-900" data-lang="all">Todos</button>
-                <button onclick="filterProjects('Python')" class="filter-btn px-2 py-0.5 bg-white text-zinc-700 hover:bg-zinc-100 font-bold border border-zinc-300" data-lang="Python">Python</button>
-                <button onclick="filterProjects('JavaScript')" class="filter-btn px-2 py-0.5 bg-white text-zinc-700 hover:bg-zinc-100 font-bold border border-zinc-300" data-lang="JavaScript">JavaScript</button>
-                <button onclick="filterProjects('Shell')" class="filter-btn px-2 py-0.5 bg-white text-zinc-700 hover:bg-zinc-100 font-bold border border-zinc-300" data-lang="Shell">Shell</button>
-              </div>
-            </div>
-
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cardsContainer"></div>
-          </div>
-        </div>
-
-        <!-- ── 3. MATRIZ COMPLETA DE REPOSITORIOS (TABLA ÚNICA CONSOLIDADA) ── -->
-        <div class="bg-white border border-zinc-300" id="matriz">
-          <div class="px-6 py-4 border-b border-zinc-200 flex items-center justify-between bg-zinc-50">
-            <div class="flex items-center gap-2">
-              <i data-lucide="layout-grid" class="w-4 h-4 text-[#1e3a8a]"></i>
-              <h3 class="font-mono text-xs font-bold text-zinc-950 uppercase tracking-widest">Matriz Técnica de Telemetría</h3>
-            </div>
-            <span class="font-mono text-[10px] text-zinc-500 font-bold">MÉTRICAS CONSOLIDADAS</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left font-mono text-xs">
-              <thead>
-                <tr class="border-b border-zinc-300 text-[10px] text-zinc-500 uppercase tracking-wider bg-white">
-                  <th class="p-3">
-                    <div class="flex items-center gap-1.5"><i data-lucide="folder-git-2" class="w-3 h-3 text-zinc-400"></i><span>Proyecto</span></div>
-                  </th>
-                  <th class="p-3">
-                    <div class="flex items-center gap-1.5"><i data-lucide="code-2" class="w-3 h-3 text-zinc-400"></i><span>Stack</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="star" class="w-3 h-3 text-zinc-400"></i><span>Stars</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="git-fork" class="w-3 h-3 text-zinc-400"></i><span>Forks</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="download" class="w-3 h-3 text-zinc-400"></i><span>Clones</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="eye" class="w-3 h-3 text-zinc-400"></i><span>Visitas</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="git-commit" class="w-3 h-3 text-zinc-400"></i><span>Commits</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="tag" class="w-3 h-3 text-zinc-400"></i><span>Releases</span></div>
-                  </th>
-                  <th class="p-3 text-right">
-                    <div class="flex items-center justify-end gap-1"><i data-lucide="git-pull-request" class="w-3 h-3 text-zinc-400"></i><span>PRs</span></div>
-                  </th>
-                  <th class="p-3">
-                    <div class="flex items-center gap-1.5"><i data-lucide="scale" class="w-3 h-3 text-zinc-400"></i><span>Licencia</span></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-zinc-200" id="tableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ── 4. CUADRO DE HONOR: COLABORADORES ── -->
-        <div class="bg-white border border-zinc-300 p-6" id="colaboradores">
-          <div class="flex items-center justify-between border-b border-zinc-200 pb-3 mb-6">
-            <div class="flex items-center gap-2">
-              <i data-lucide="award" class="w-4 h-4 text-[#b45309]"></i>
-              <h3 class="font-mono text-xs font-bold text-zinc-950 uppercase tracking-widest">
-                Cuadro de Honor de Colaboradores
-              </h3>
-            </div>
-            <span class="font-mono text-[10px] text-zinc-500 font-bold uppercase">COMMITS TOTALES HUMANOS</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="contributorsGrid"></div>
-        </div>
-      </div>
-
-      <!-- ── CTA: CREA TU PROPIO DASHBOARD (OPEN SOURCE) ── -->
-      <div class="px-8 pb-4">
-        <div class="p-6 bg-white border border-zinc-300 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div class="space-y-1 text-center md:text-left">
-            <div class="flex items-center justify-center md:justify-start gap-2 font-mono text-xs font-bold text-zinc-950 uppercase tracking-wide">
-              <i data-lucide="git-fork" class="w-4 h-4 text-emerald-700"></i>
-              <span>¿Quieres un dashboard como este para tu perfil u organización?</span>
-            </div>
-            <p class="text-zinc-600 text-xs font-mono">
-              Es 100% abierto. Haz fork del repositorio, cambia tu usuario en <code class="bg-zinc-100 px-1 py-0.5 border border-zinc-200 text-zinc-900 font-bold">config.json</code> y publícalo gratis en GitHub Pages.
-            </p>
-          </div>
-          <a href="https://github.com/shellaquiles/stats/fork" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-black text-white font-mono text-xs font-bold border border-zinc-900 transition-all hover:scale-105 shadow-sm">
-            <i data-lucide="git-fork" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>Fork & Crear mi Dashboard</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Footer Institucional con Crédito Permanente de Origen -->
-      <footer class="p-4 border-t border-zinc-300 text-[10px] font-mono text-zinc-500 flex flex-col md:flex-row items-center justify-between bg-white px-8 gap-3">
-        <div class="flex flex-wrap items-center gap-2">
-          <i data-lucide="terminal" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
-          <span id="footerBrandTagline">ECOSISTEMA OPEN SOURCE</span>
-          <span class="text-zinc-300">|</span>
-          <span class="text-zinc-500">
-            Impulsado por <a href="https://shellaquiles.org" target="_blank" class="font-bold text-zinc-900 hover:text-blue-700 hover:underline">Shellaquiles</a> 
-            (<a href="https://github.com/shellaquiles/stats" target="_blank" class="hover:text-blue-700 hover:underline">shellaquiles/stats</a>)
-          </span>
-        </div>
-        <div class="flex items-center gap-4">
-          <a href="#" target="_blank" id="footerGithubLink" class="font-bold text-zinc-900 hover:text-blue-700 hover:underline flex items-center gap-1">
-            <i data-lucide="external-link" class="w-3 h-3"></i>
-            <span>GitHub</span>
-          </a>
-          <span class="text-zinc-300">•</span>
-          <a href="#" target="_blank" id="footerWebLink" class="font-bold text-zinc-900 hover:text-blue-700 hover:underline">Sitio Oficial</a>
-        </div>
-      </footer>
-
-    </main>
-
+  <!-- LOADING -->
+  <div id="loading">
+    <i data-lucide="loader-2" style="display:inline-block;width:18px;height:18px;vertical-align:middle;margin-right:6px;animation:spin 1s linear infinite;"></i>
+    Cargando métricas...
   </div>
 
-  <!-- ── FRONTEND JAVASCRIPT: REACTIVE TELEMETRY LOADER ── -->
-  <script>
-    let currentReposData = [];
-
-    const getLangBadge = (lang) => {
-      if (lang === 'Python') return 'bg-blue-50 text-blue-900 border-blue-300';
-      if (lang === 'JavaScript') return 'bg-amber-50 text-amber-900 border-amber-300';
-      if (lang === 'TypeScript') return 'bg-blue-50 text-blue-800 border-blue-300';
-      if (lang === 'Shell') return 'bg-emerald-50 text-emerald-900 border-emerald-300';
-      if (lang === 'CSS' || lang === 'HTML') return 'bg-zinc-100 text-zinc-900 border-zinc-300';
-      return 'bg-zinc-100 text-zinc-700 border-zinc-200';
-    };
-
-    function renderProjectCards(filteredData) {
-      const cardsContainer = document.getElementById('cardsContainer');
-      if (!cardsContainer) return;
-      cardsContainer.innerHTML = filteredData.map(r => `
-        <div class="border border-zinc-300 bg-white flex flex-col justify-between hover:border-zinc-500 transition-colors border-t-4 ${r.accentColor || 'border-t-[#1e3a8a]'}">
-
-          <!-- HEADER -->
-          <div class="p-4 pb-3">
-            <div class="flex items-start justify-between mb-1.5">
-              <div class="flex items-center gap-2 min-w-0">
-                <i data-lucide="${r.icon || 'box'}" class="w-4 h-4 flex-shrink-0 text-zinc-600"></i>
-                <a href="${r.url}" target="_blank" class="text-xs font-bold font-mono text-zinc-950 hover:text-[#1e3a8a] hover:underline truncate">${r.name}</a>
-              </div>
-              ${r.badge ? `<span class="px-1.5 py-0.5 bg-zinc-900 text-white text-[9px] font-mono font-bold flex-shrink-0 ml-2">${r.badge}</span>` : `<span class="px-1.5 py-0.5 border text-[9px] font-mono font-bold flex-shrink-0 ml-2 ${getLangBadge(r.language)}">${r.language}</span>`}
-            </div>
-
-            <!-- Fecha + Licencia + Colaboradores inline -->
-            <div class="flex items-center justify-between font-mono text-[10px] text-zinc-400 mb-2.5">
-              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3 text-zinc-400"></i>${r.created_at}</span>
-              <span class="flex items-center gap-1"><i data-lucide="users" class="w-3 h-3 text-[#7c3aed]"></i><strong class="text-zinc-700">${r.contributors}</strong> colabs</span>
-              <span class="flex items-center gap-1"><i data-lucide="scale" class="w-3 h-3 text-zinc-400"></i>${r.license && r.license !== 'None' ? r.license : '—'}</span>
-            </div>
-
-            <p class="text-xs text-zinc-600 line-clamp-2 leading-relaxed mb-3">${r.description || 'Herramienta en desarrollo dentro de la organización.'}</p>
-
-            <!-- Tags / Topics -->
-            <div class="flex flex-wrap gap-1">
-              ${(r.topics || []).slice(0, 3).map(t => `<span class="bg-zinc-100 text-zinc-700 px-1.5 py-0.2 text-[9px] font-mono border border-zinc-200">#${t}</span>`).join('')}
-            </div>
-          </div>
-
-          <!-- STATS ROW: Stars · Forks · Clones · Commits -->
-          <div class="grid grid-cols-4 text-center border-t border-zinc-200 font-mono bg-zinc-50/50">
-            <div class="py-2.5 border-r border-zinc-200">
-              <div class="text-sm font-bold text-zinc-900 leading-none">${r.stars}</div>
-              <div class="text-[9px] text-zinc-400 mt-1 flex items-center justify-center gap-0.5">
-                <i data-lucide="star" class="w-2.5 h-2.5 text-amber-500"></i>Stars
-              </div>
-            </div>
-            <div class="py-2.5 border-r border-zinc-200">
-              <div class="text-sm font-bold text-zinc-900 leading-none">${r.forks}</div>
-              <div class="text-[9px] text-zinc-400 mt-1 flex items-center justify-center gap-0.5">
-                <i data-lucide="git-fork" class="w-2.5 h-2.5 text-[#1e3a8a]"></i>Forks
-              </div>
-            </div>
-            <div class="py-2.5 border-r border-zinc-200">
-              <div class="text-sm font-bold text-zinc-900 leading-none">${r.clones_14d}</div>
-              <div class="text-[9px] text-zinc-400 mt-1 flex items-center justify-center gap-0.5">
-                <i data-lucide="download" class="w-2.5 h-2.5 text-[#0891b2]"></i>Clones
-              </div>
-            </div>
-            <div class="py-2.5">
-              <div class="text-sm font-bold text-zinc-900 leading-none">${r.commits}</div>
-              <div class="text-[9px] text-zinc-400 mt-1 flex items-center justify-center gap-0.5">
-                <i data-lucide="git-commit" class="w-2.5 h-2.5 text-[#046a38]"></i>Commits
-              </div>
-            </div>
-          </div>
-
-          <!-- FOOTER LINKS -->
-          <div class="grid grid-cols-2 border-t border-zinc-200 font-mono text-[11px] mt-auto">
-            <a href="${r.url}" target="_blank" class="flex items-center justify-center gap-1 py-2 bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-r border-zinc-200 font-bold transition-colors">
-              <i data-lucide="github" class="w-3 h-3"></i><span>Código</span>
+  <!-- ORG HERO (hidden until data loads) -->
+  <section class="org-hero" id="org-hero" style="display:none;">
+    <div class="org-hero-inner">
+      <div class="org-hero-meta">
+        <div class="org-title-wrap">
+          <div class="org-avatar-wrap" id="org-avatar-wrap" style="display:none;">
+            <a id="org-avatar-link" href="https://github.com/shellaquiles" target="_blank" rel="noopener">
+              <img id="org-avatar-img" class="org-avatar" src="" alt="Avatar" />
             </a>
-            ${r.pages_url ? `
-              <a href="${r.pages_url}" target="_blank" class="flex items-center justify-center gap-1 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold transition-colors">
-                <i data-lucide="globe" class="w-3 h-3"></i><span>Sitio Web</span>
-              </a>
-            ` : (r.homepageUrl ? `
-              <a href="${r.homepageUrl}" target="_blank" class="flex items-center justify-center gap-1 py-2 bg-zinc-900 hover:bg-black text-white font-bold transition-colors">
-                <i data-lucide="external-link" class="w-3 h-3"></i><span>Demo</span>
-              </a>
-            ` : `
-              <a href="${r.url}#readme" target="_blank" class="flex items-center justify-center gap-1 py-2 bg-white hover:bg-zinc-50 text-zinc-500 font-bold transition-colors">
-                <i data-lucide="book-open" class="w-3 h-3"></i><span>README</span>
-              </a>
-            `)}
           </div>
-
+          <h1>Huella Digital<br><em id="org-handle">@usuario</em></h1>
         </div>
-      `).join('');
-      if (window.lucide) lucide.createIcons();
+        <p class="subtitle" id="org-subtitle">Radar acumulado de todos los repositorios públicos</p>
+        <div class="org-kpis" id="org-kpis"></div>
+      </div>
+      <div class="org-radar-wrap">
+        <canvas id="org-radar"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION HEADER: POR REPOSITORIO -->
+  <div class="section-header" id="section-repos" style="display:none;">
+    <h2 id="proyectos">Por Repositorio</h2>
+    <div class="section-header-line"></div>
+  </div>
+
+  <!-- REPO GRID -->
+  <main class="radar-grid" id="radar-grid" style="display:none;"></main>
+
+  <!-- SECTION HEADER: STATS GLOBALES -->
+  <div class="section-header" id="section-stats" style="display:none;margin-top:3.5rem;">
+    <h2 id="stats">Stats Globales</h2>
+    <div class="section-header-line"></div>
+  </div>
+
+  <!-- TABLE SECTION -->
+  <section class="table-section" id="table-section" style="display:none;margin-top:1.5rem;">
+    <div class="table-wrap">
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th><i data-lucide="folder-git-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Proyecto</th>
+            <th><i data-lucide="code-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Stack</th>
+            <th class="num"><i data-lucide="star" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#b45309;"></i> Stars</th>
+            <th class="num"><i data-lucide="git-fork" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#1e3a8a;"></i> Forks</th>
+            <th class="num"><i data-lucide="download" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#0891b2;"></i> Clones</th>
+            <th class="num"><i data-lucide="eye" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#db2777;"></i> Visitas</th>
+            <th class="num"><i data-lucide="git-commit" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> Commits</th>
+            <th class="num"><i data-lucide="tag" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Releases</th>
+            <th class="num"><i data-lucide="git-pull-request" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> PRs</th>
+            <th><i data-lucide="scale" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Licencia</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Render dinámico -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION HEADER: COLABORADORES Y CORE TEAM -->
+  <div class="section-header" id="section-contrib" style="display:none;margin-top:3.5rem;">
+    <h2 id="colaboradores">Colaboradores y Core Team</h2>
+    <div class="section-header-line"></div>
+  </div>
+
+  <!-- CONTRIBUTORS SECTION -->
+  <section class="contrib-section" id="contrib-section" style="display:none;margin-top:1.5rem;">
+    <div class="contrib-grid" id="contrib-grid">
+      <!-- Render dinámico -->
+    </div>
+  </section>
+
+  <!-- CTA BANNER SECTION -->
+  <section class="cta-section" id="cta-section" style="display:none;">
+    <div class="cta-card">
+      <div class="cta-text">
+        <div class="cta-title">
+          <i data-lucide="git-fork"></i>
+          <span>¿Quieres medir la huella de tu organización o perfil?</span>
+        </div>
+        <p class="cta-desc">
+          Este dashboard es 100% abierto. Clona el repositorio, define tu usuario en <code>config.json</code> y publica tus métricas gratis en GitHub Pages.
+        </p>
+      </div>
+      <a class="cta-btn" href="https://github.com/shellaquiles/stats/fork" target="_blank" rel="noopener">
+        <i data-lucide="git-fork"></i>
+        <span>Usar Template en GitHub</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER (FIXED) -->
+  <footer class="site-footer" id="site-footer" style="display:none;">
+    <div class="site-footer-inner">
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+        <i data-lucide="terminal" style="width:13px;height:13px;color:var(--navy);"></i>
+        <span id="footer-owner-text" style="font-weight:700;color:var(--ink);">@shellaquiles</span>
+        <span>•</span>
+        <span id="footer-tagline">ACTIVO DESDE AGOSTO 2025</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <span>Impulsado por <a href="https://github.com/shellaquiles/stats" target="_blank" rel="noopener">shellaquiles/stats</a></span>
+        <span class="table-tag" id="footer-version">v1.0.0</span>
+        <span>•</span>
+        <a href="https://github.com/shellaquiles" target="_blank" rel="noopener" id="footer-gh-link">GitHub ↗</a>
+        <span>•</span>
+        <a href="https://shellaquiles.org" target="_blank" rel="noopener" id="footer-web-link">Sitio Oficial</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  const AXES = [
+    { key: 'repos_count',  label: 'Proyectos',    icon: 'layers',       color: '#09090b' },
+    { key: 'stars',        label: 'Stars',        icon: 'star',         color: '#b45309' },
+    { key: 'forks',        label: 'Forks',        icon: 'git-fork',     color: '#1e3a8a' },
+    { key: 'commits',      label: 'Commits',      icon: 'git-commit',   color: '#046a38' },
+    { key: 'contributors', label: 'Colaboradores', icon: 'users',       color: '#7c3aed' },
+    { key: 'clones_14d',   label: 'Clones 14d',   icon: 'download',     color: '#0891b2' },
+  ];
+
+  // Org radar: Proyectos, Stars, Forks, Colaboradores
+  const ORG_AXES = [
+    { key: 'repos_count',  label: 'Proyectos',    icon: 'layers',       color: '#09090b' },
+    { key: 'stars',        label: 'Stars',        icon: 'star',         color: '#b45309' },
+    { key: 'forks',        label: 'Forks',        icon: 'git-fork',     color: '#1e3a8a' },
+    { key: 'contributors', label: 'Colaboradores', icon: 'users',       color: '#7c3aed' },
+  ];
+
+  const ACCENT_MAP = {
+    'border-t-[#1e3a8a]': '#1e3a8a',
+    'border-t-[#046a38]': '#046a38',
+    'border-t-[#b45309]': '#b45309',
+    'border-t-zinc-800':  '#27272a',
+    'border-t-zinc-400':  '#a1a1aa',
+  };
+
+  function norm(val, max) { return Math.round((val / Math.max(1, max)) * 100); }
+
+  function makeRadar(canvasId, values, labels, accent, rawVals) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    const accent20 = accent + '33';
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: accent20,
+          borderColor: accent,
+          borderWidth: 2.5,
+          pointBackgroundColor: accent,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 800, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#fff', borderColor: accent, borderWidth: 1,
+            titleColor: '#09090b', bodyColor: '#71717a',
+            titleFont: { family: 'JetBrains Mono', size: 11, weight: '700' },
+            bodyFont: { family: 'JetBrains Mono', size: 11 },
+            padding: 10,
+            callbacks: {
+              label: function(c) {
+                return '  ' + rawVals[c.dataIndex].toLocaleString() + ' (' + c.raw + '%)';
+              }
+            }
+          }
+        },
+        scales: {
+          r: {
+            min: 0, max: 100, beginAtZero: true,
+            ticks: { display: false, stepSize: 25 },
+            pointLabels: { font: { family: 'JetBrains Mono', size: 10, weight: '500' }, color: '#71717a' },
+            grid: { color: '#e4e4e7', lineWidth: 1 },
+            angleLines: { color: '#d4d4d8', lineWidth: 1 },
+          }
+        }
+      }
+    });
+  }
+
+  async function loadTelemetry() {
+    const payload = await fetch('data.json').then(r => r.json());
+    const repos   = payload.repos || [];
+    const meta    = payload.meta  || {};
+    const handle  = meta.target || 'usuario';
+
+    // ── Hydrate handles & Avatar ──────────────────────────────
+    document.getElementById('org-handle').textContent = '@' + handle;
+    const tbh = document.getElementById('topbar-handle');
+    if (tbh) tbh.textContent = handle;
+    const centerUserEl = document.getElementById('topbar-center-user');
+    if (centerUserEl) centerUserEl.textContent = '@' + handle;
+    const centerLinkEl = document.getElementById('topbar-center-link');
+    if (centerLinkEl && meta.links?.github) centerLinkEl.href = meta.links.github;
+
+    // Avatar
+    const avatarWrap = document.getElementById('org-avatar-wrap');
+    const avatarImg  = document.getElementById('org-avatar-img');
+    const avatarLink = document.getElementById('org-avatar-link');
+    if (avatarWrap && avatarImg) {
+      avatarImg.src = `https://github.com/${handle}.png?size=128`;
+      avatarImg.alt = `@${handle}`;
+      if (avatarLink && meta.links?.github) avatarLink.href = meta.links.github;
+      avatarWrap.style.display = 'block';
     }
 
-    window.filterProjects = function(lang) {
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        if (btn.dataset.lang === lang) {
-          btn.className = 'filter-btn px-2 py-0.5 bg-zinc-900 text-white font-bold border border-zinc-900';
-        } else {
-          btn.className = 'filter-btn px-2 py-0.5 bg-white text-zinc-700 hover:bg-zinc-100 font-bold border border-zinc-300';
-        }
-      });
+    document.getElementById('org-subtitle').textContent =
+      'Radar acumulado de ' + repos.length + ' repositorios públicos de @' + handle;
 
-      const filtered = lang === 'all' 
-        ? currentReposData 
-        : currentReposData.filter(item => (item.language || '').toLowerCase() === lang.toLowerCase());
-      renderProjectCards(filtered);
+    // ── ORG TOTALS ─────────────────────────────────────────────
+    const totals = {
+      repos_count: repos.length
     };
+    AXES.forEach(a => { if (a.key !== 'repos_count') totals[a.key] = repos.reduce((s, r) => s + (r[a.key] || 0), 0); });
+    const totalReleases = repos.reduce((s, r) => s + (r.releases || 0), 0);
+    const totalPRs      = repos.reduce((s, r) => s + (r.prs || 0), 0);
 
-    function renderCharts(repos) {
-      // ── RADAR: Sumatoria total — Stars / Forks / Colaboradores ─────────────
-      const ctxComunidad = document.getElementById('chartComunidad')?.getContext('2d');
-      if (ctxComunidad) {
-        const RADAR_AXES = [
-          { key: 'stars',        label: 'Stars',        color: '#b45309' },
-          { key: 'forks',        label: 'Forks',        color: '#1e3a8a' },
-          { key: 'contributors', label: 'Colaboradores', color: '#7c3aed' },
-        ];
-        // Sumar todos los repos por eje
-        const totals = RADAR_AXES.map(a => repos.reduce((s, r) => s + (r[a.key] || 0), 0));
-        // Normalizar: el eje con más total = 100%
-        const maxTotal = Math.max(1, ...totals);
-        const normalizedVals = totals.map(v => Math.round((v / maxTotal) * 100));
+    // KPI row (8 cells → 4)
+    const kpiDefs = [
+      { val: repos.length,       label: 'Repos',     icon: 'layers' },
+      { val: totals.stars,       label: 'Stars',     icon: 'star' },
+      { val: totals.commits,     label: 'Commits',   icon: 'git-commit' },
+      { val: totals.clones_14d,  label: 'Clones 14d',icon: 'download' },
+    ];
+    const kpiEl = document.getElementById('org-kpis');
+    kpiDefs.forEach(k => {
+      kpiEl.innerHTML +=
+        '<div class="org-kpi">' +
+          '<span class="org-kpi-val">' + k.val.toLocaleString() + '</span>' +
+          '<span class="org-kpi-label"><i data-lucide="' + k.icon + '"></i> ' + k.label + '</span>' +
+        '</div>';
+    });
 
-        new Chart(ctxComunidad, {
-          type: 'radar',
-          data: {
-            labels: RADAR_AXES.map(a => a.label),
-            datasets: [{
-              label: 'Total org',
-              data: normalizedVals,
-              backgroundColor: '#1e3a8a1a',
-              borderColor: '#1e3a8a',
-              borderWidth: 2.5,
-              pointBackgroundColor: RADAR_AXES.map(a => a.color),
-              pointBorderColor: '#fff',
-              pointBorderWidth: 2,
-              pointRadius: 5,
-              pointHoverRadius: 7,
-              fill: true,
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 700, easing: 'easeOutQuart' },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: '#fff', borderColor: '#1e3a8a', borderWidth: 1,
-                titleColor: '#09090b', bodyColor: '#71717a',
-                titleFont: { family: 'JetBrains Mono', size: 11, weight: '700' },
-                bodyFont: { family: 'JetBrains Mono', size: 10 },
-                padding: 10,
-                callbacks: {
-                  title: function(items) { return RADAR_AXES[items[0].dataIndex].label; },
-                  label: function(c) {
-                    return '  Total: ' + totals[c.dataIndex].toLocaleString() + ' (' + c.raw + '% del eje líder)';
-                  }
-                }
+    // Normalize org totals against each other (max among ORG_AXES totals = 100)
+    const maxTotal  = Math.max(...ORG_AXES.map(a => totals[a.key]));
+    const orgValues  = ORG_AXES.map(a => norm(totals[a.key], maxTotal));
+    const orgRawVals = ORG_AXES.map(a => totals[a.key]);
+
+    // ── ORG RADAR ──────────────────────────────────────────────
+    const orgCtx = document.getElementById('org-radar').getContext('2d');
+    new Chart(orgCtx, {
+      type: 'radar',
+      data: {
+        labels: ORG_AXES.map(a => a.label),
+        datasets: [{
+          data: orgValues,
+          backgroundColor: '#1e3a8a22',
+          borderColor: '#1e3a8a',
+          borderWidth: 3,
+          pointBackgroundColor: ORG_AXES.map(a => a.color),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 1000, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#fff', borderColor: '#1e3a8a', borderWidth: 1,
+            titleColor: '#09090b', bodyColor: '#71717a',
+            titleFont: { family: 'JetBrains Mono', size: 12, weight: '700' },
+            bodyFont: { family: 'JetBrains Mono', size: 12 },
+            padding: 12,
+            callbacks: {
+              label: function(c) {
+                return '  Total: ' + orgRawVals[c.dataIndex].toLocaleString() + ' (' + c.raw + '% del eje líder)';
               }
+            }
+          }
+        },
+        scales: {
+          r: {
+            min: 0, max: 100, beginAtZero: true,
+            ticks: { display: false, stepSize: 25 },
+            pointLabels: {
+              font: { family: 'JetBrains Mono', size: 11, weight: '700' },
+              color: '#3f3f46',
             },
-            scales: {
-              r: {
-                min: 0, max: 100, beginAtZero: true,
-                ticks: { display: false, stepSize: 25 },
-                pointLabels: { font: { family: 'JetBrains Mono', size: 10, weight: '600' }, color: '#3f3f46' },
-                grid: { color: '#e4e4e7', lineWidth: 1 },
-                angleLines: { color: '#d4d4d8', lineWidth: 1 },
-              }
-            }
+            grid: { color: '#e4e4e7', lineWidth: 1 },
+            angleLines: { color: '#d4d4d8', lineWidth: 1 },
           }
-        });
+        }
       }
+    });
 
-      const ctxCommits = document.getElementById('chartCommits')?.getContext('2d');
-      if (ctxCommits) {
-        new Chart(ctxCommits, {
-          type: 'doughnut',
-          data: {
-            labels: repos.map(d => d.name),
-            datasets: [{
-              data: repos.map(d => d.commits),
-              backgroundColor: ['#1e3a8a', '#046a38', '#b45309', '#09090b', '#52525b', '#94a3b8'],
-              borderWidth: 2,
-              borderColor: '#ffffff'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { position: 'right', labels: { font: { family: 'JetBrains Mono', size: 10, weight: 600 }, color: '#09090b' } }
-            }
-          }
-        });
-      }
+    // ── SHOW SECTIONS ──────────────────────────────────────────
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+
+    const orgHeroEl = document.getElementById('org-hero');
+    if (orgHeroEl) orgHeroEl.style.display = 'block';
+
+    const secReposEl = document.getElementById('section-repos');
+    if (secReposEl) secReposEl.style.display = 'flex';
+
+    const legendEl = document.getElementById('axis-legend');
+    if (legendEl) legendEl.style.display = 'none';
+
+    // ── REPO CARDS (SIN RADAR) ─────────────────────────────────
+    const grid = document.getElementById('radar-grid');
+    if (grid) {
+      grid.style.display = 'grid';
+      grid.innerHTML = '';
     }
 
-    async function loadTelemetry() {
-      try {
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error('data.json no encontrado');
-        const payload = await res.json();
+    repos.forEach((repo, idx) => {
+      const accent   = ACCENT_MAP[repo.accentColor] || '#1e3a8a';
 
-        currentReposData = payload.repos || [];
-        const contributors = payload.contributors || [];
-        const referrers = payload.referrers || [];
-        const summary = payload.summary || {};
-        const meta = payload.meta || {};
+      const card = document.createElement('div');
+      card.className = 'repo-card';
+      card.style.borderTop = '3px solid ' + accent;
 
-        // Actualizar Branding & Metadata Dinámica
-        if (meta.title) document.title = meta.title;
-        if (meta.target) {
-          const ht = document.getElementById('headerUserTarget');
-          if (ht) ht.innerText = `(@${meta.target})`;
-        }
-        if (meta.version) {
-          const vs = document.getElementById('versionBadgeSidebar');
-          const vh = document.getElementById('versionBadgeHeader');
-          const formattedVersion = meta.version.startsWith('v') ? meta.version : `v${meta.version}`;
-          if (vs) vs.innerText = formattedVersion;
-          if (vh) vh.innerText = formattedVersion;
-        }
-        if (meta.brand) {
-          const bp = document.getElementById('brandPrefix');
-          const bm = document.getElementById('brandMiddle');
-          const bs = document.getElementById('brandSuffix');
-          const bt = document.getElementById('brandTagline');
-          const ht = document.getElementById('heroTagline');
+      const badgeHtml = repo.badge
+        ? '<span class="card-badge" style="color:' + accent + ';border-color:' + accent + ';">' + repo.badge + '</span>'
+        : '';
 
-          if (bp) {
-            bp.innerText = meta.brand.prefix || '';
-            if (meta.brand.prefix_color) bp.style.color = meta.brand.prefix_color;
-          }
-          if (bm) bm.innerText = meta.brand.middle || '';
-          if (bs) {
-            bs.innerText = meta.brand.suffix || '';
-            if (meta.brand.suffix_color) bs.style.color = meta.brand.suffix_color;
-          }
-          if (bt) bt.innerText = meta.brand.tagline || 'TELEMETRÍA ACTIVA';
-          if (ht) ht.innerText = meta.brand.tagline || 'TELEMETRÍA ACTIVA';
-        }
+      const createdDate = repo.created_at ? repo.created_at : '2025';
+      const colabsCount = repo.contributors || 1;
+      const pagesLink   = repo.has_pages ? (repo.pages_url || `https://${handle}.github.io/${repo.name}/`) : (repo.homepageUrl || null);
 
-        if (meta.links?.github) {
-          const btn = document.getElementById('btnGithubOrg');
-          if (btn) btn.href = meta.links.github;
-          const ftGh = document.getElementById('footerGithubLink');
-          if (ftGh) ftGh.href = meta.links.github;
-        }
-        if (meta.links?.website) {
-          const ftWeb = document.getElementById('footerWebLink');
-          if (ftWeb) ftWeb.href = meta.links.website;
-        }
-        const ftTag = document.getElementById('footerBrandTagline');
-        if (ftTag && meta.brand?.tagline) {
-          ftTag.innerText = `${meta.target || 'Ecosistema'} • ${meta.brand.tagline}`;
-        }
+      card.innerHTML =
+        '<div class="card-header">' +
+          '<div class="card-title-block">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.25rem;">' +
+              '<a class="card-name" href="' + repo.url + '" target="_blank" rel="noopener">' + repo.name + '</a>' +
+              badgeHtml +
+            '</div>' +
+            '<div class="card-desc">' + (repo.description || '—') + '</div>' +
+            '<div class="card-meta-row">' +
+              '<span class="card-meta-item"><i data-lucide="calendar"></i> Creado: <strong>' + createdDate + '</strong></span>' +
+              '<span class="card-meta-item"><i data-lucide="users"></i> Colabs: <strong style="color:#166534;">' + colabsCount + '</strong></span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-icon-wrap" style="color:' + accent + ';border-color:' + accent + '22;">' +
+            '<i data-lucide="' + (repo.icon || 'box') + '"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-stats">' +
+          '<div class="stat-cell"><span class="stat-val">' + (repo.stars || 0) + '</span><span class="stat-label"><i data-lucide="star" style="color:#b45309;"></i> Stars</span></div>' +
+          '<div class="stat-cell"><span class="stat-val">' + (repo.forks || 0) + '</span><span class="stat-label"><i data-lucide="git-fork" style="color:#1e3a8a;"></i> Forks</span></div>' +
+          '<div class="stat-cell"><span class="stat-val">' + (repo.commits || 0) + '</span><span class="stat-label"><i data-lucide="git-commit" style="color:#046a38;"></i> Commits</span></div>' +
+          '<div class="stat-cell"><span class="stat-val">' + (repo.clones_14d || 0) + '</span><span class="stat-label"><i data-lucide="download" style="color:#0891b2;"></i> Clones</span></div>' +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<div class="tag-list">' +
+            '<span class="tag">' + (repo.language || '—') + '</span>' +
+            (repo.license && repo.license !== 'None' ? '<span class="tag">' + repo.license + '</span>' : '') +
+            (repo.releases > 0 ? '<span class="tag">' + repo.releases + 'v</span>' : '') +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:0.75rem;">' +
+            (pagesLink ? '<a class="card-link" href="' + pagesLink + '" target="_blank" rel="noopener" style="color:#046a38;"><i data-lucide="globe" style="width:10px;height:10px;"></i> Demo</a>' : '') +
+            '<a class="card-link" href="' + repo.url + '" target="_blank" rel="noopener">GitHub <i data-lucide="arrow-up-right"></i></a>' +
+          '</div>' +
+        '</div>';
 
-        const hlList = document.getElementById('highlightsList');
-        if (hlList && currentReposData.length > 0) {
-          const topHighlights = currentReposData.slice(0, 3);
-          hlList.innerHTML = topHighlights.map(r => `
-            <div class="flex items-start gap-3 py-2 border-b border-zinc-200 bg-white p-3 border">
-              <div class="w-7 h-7 bg-zinc-100 border border-zinc-300 flex items-center justify-center text-zinc-900 shrink-0">
-                <i data-lucide="${r.icon || 'box'}" class="w-4 h-4"></i>
-              </div>
-              <div>
-                <a href="${r.url}" target="_blank" class="text-zinc-950 block text-xs font-mono font-bold hover:underline hover:text-blue-700">
-                  ${r.name}
-                </a>
-                <span class="text-zinc-600 text-[11px] line-clamp-2">${r.description || (r.commits + ' commits y ' + r.stars + ' estrellas.')}</span>
-              </div>
-            </div>
-          `).join('');
-        }
+      grid.appendChild(card);
+    });
 
-        if (summary.total_stars !== undefined) {
-          const el = document.getElementById('kpi-stars');
-          if (el) el.innerHTML = `<span>${summary.total_stars}</span> <i data-lucide="star" class="w-3.5 h-3.5 text-amber-500 fill-amber-500"></i>`;
-        }
-        if (summary.total_forks !== undefined) {
-          const el = document.getElementById('kpi-forks');
-          if (el) el.innerHTML = `<span>${summary.total_forks}</span> <i data-lucide="git-fork" class="w-3 h-3 text-zinc-600"></i> forks`;
-        }
-        if (summary.total_commits !== undefined) {
-          const el = document.getElementById('kpi-commits');
-          if (el) el.innerHTML = `${summary.total_commits}`;
-        }
-        if (summary.total_clones_14d !== undefined) {
-          const el = document.getElementById('kpi-clones-hero');
-          if (el) el.innerHTML = `${summary.total_clones_14d}`;
-        }
-        if (summary.total_clones_uniques_14d !== undefined) {
-          const el = document.getElementById('kpi-clones-uniques');
-          if (el) el.innerHTML = `${summary.total_clones_uniques_14d}`;
-        }
-        if (summary.total_prs !== undefined) {
-          const el = document.getElementById('kpi-prs');
-          if (el) el.innerHTML = `${summary.total_prs} PRs`;
-        }
-        if (summary.total_releases !== undefined) {
-          const el = document.getElementById('kpi-releases');
-          if (el) el.innerHTML = `${summary.total_releases} Releases`;
-        }
-        if (summary.total_contributors !== undefined) {
-          const el = document.getElementById('kpi-contributors-count');
-          if (el) el.innerHTML = `${summary.total_contributors} Colaboradores`;
-        }
-        if (summary.total_repos !== undefined) {
-          const el = document.getElementById('sidebar-repo-count');
-          if (el) el.innerHTML = `${summary.total_repos} REPOSITORIOS`;
-        }
+    // ── STATS GLOBALES TABLE ───────────────────────────────────
+    document.getElementById('section-stats').style.display = 'flex';
+    document.getElementById('table-section').style.display = 'block';
 
-        const contribGrid = document.getElementById('contributorsGrid');
-        if (contribGrid) {
-          contribGrid.innerHTML = contributors.map(c => `
-            <a href="${c.html_url}" target="_blank" class="p-3 bg-white border border-zinc-200 hover:border-zinc-500 transition-colors flex items-center gap-3">
-              <img src="${c.avatar_url}" alt="${c.login}" class="w-9 h-9 rounded-full border border-zinc-300 shrink-0" />
-              <div class="min-w-0 flex-1 font-mono">
-                <div class="font-bold text-xs text-zinc-950 truncate hover:text-blue-700">@${c.login}</div>
-                <div class="text-[10px] text-zinc-500 truncate">${c.repos_count} repos</div>
-                <div class="text-[10px] font-bold text-blue-900 mt-0.5">${c.contributions} commits</div>
-              </div>
-            </a>
-          `).join('');
-        }
+    const tableBody = document.getElementById('table-body');
+    const tableRows = repos.map(r => `
+      <tr>
+        <td>
+          <a class="table-repo-link" href="${r.url}" target="_blank" rel="noopener">
+            <i data-lucide="${r.icon || 'box'}" style="width:13px;height:13px;color:#1e3a8a;"></i>
+            <strong>${r.name}</strong>
+          </a>
+        </td>
+        <td><span class="table-tag">${r.language || '—'}</span></td>
+        <td class="num" style="font-weight:700;">${(r.stars || 0).toLocaleString()}</td>
+        <td class="num">${(r.forks || 0).toLocaleString()}</td>
+        <td class="num">${(r.clones_14d || 0).toLocaleString()}</td>
+        <td class="num">${(r.views_14d || 0).toLocaleString()}</td>
+        <td class="num">${(r.commits || 0).toLocaleString()}</td>
+        <td class="num">${r.releases > 0 ? r.releases + 'v' : '—'}</td>
+        <td class="num">${r.prs || 0}</td>
+        <td><span class="table-tag">${r.license && r.license !== 'None' ? r.license : 'MIT'}</span></td>
+      </tr>
+    `).join('');
 
-        const refContainer = document.getElementById('referrersList');
-        if (refContainer) {
-          refContainer.innerHTML = referrers.map(rf => {
-            const hasViews = rf.views > 0;
-            return `
-              <div class="flex items-center justify-between px-3 py-1.5 bg-zinc-50 border border-zinc-200 hover:border-zinc-400 transition-colors">
-                <div class="flex items-center gap-2">
-                  <i data-lucide="${rf.icon || 'globe'}" class="w-3.5 h-3.5 text-zinc-600"></i>
-                  <span class="font-bold text-zinc-900 text-xs">${rf.name}</span>
-                </div>
-                <div class="text-right font-mono">
-                  ${hasViews ? `
-                    <span class="font-bold text-xs text-zinc-950">${rf.views}</span>
-                    <span class="text-[9px] text-zinc-400">(${rf.uniques} únicos)</span>
-                  ` : `
-                    <span class="text-[9px] text-zinc-400">—</span>
-                  `}
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
+    const totalsRow = `
+      <tr class="table-totals-row">
+        <td><strong>TOTAL (${repos.length} PROYECTOS)</strong></td>
+        <td><span class="table-tag">ECOSISTEMA</span></td>
+        <td class="num">${(totals.stars || 0).toLocaleString()}</td>
+        <td class="num">${(totals.forks || 0).toLocaleString()}</td>
+        <td class="num">${(totals.clones_14d || 0).toLocaleString()}</td>
+        <td class="num">${(totals.views_14d || repos.reduce((s,r) => s + (r.views_14d||0),0)).toLocaleString()}</td>
+        <td class="num">${(totals.commits || 0).toLocaleString()}</td>
+        <td class="num">${totalReleases}v</td>
+        <td class="num">${totalPRs}</td>
+        <td>—</td>
+      </tr>
+    `;
 
-        // Render Matriz Consolidada
-        const tbody = document.getElementById('tableBody');
-        if (tbody) {
-          tbody.innerHTML = currentReposData.map(r => `
-            <tr class="hover:bg-zinc-50 transition-colors">
-              <td class="p-3 font-bold">
-                <div class="flex items-center gap-2">
-                  <i data-lucide="${r.icon || 'box'}" class="w-3.5 h-3.5 text-zinc-700 shrink-0"></i>
-                  <a href="${r.url}" target="_blank" class="text-zinc-900 hover:text-blue-700 hover:underline">
-                    ${r.name}
-                  </a>
-                  ${r.pages_url ? `
-                    <a href="${r.pages_url}" target="_blank" title="Visitar Sitio Web" class="text-emerald-700 hover:text-emerald-900">
-                      <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-                    </a>
-                  ` : ''}
-                  ${r.badge ? `<span class="inline-flex items-center px-1.5 py-0.2 bg-zinc-900 text-white text-[9px] font-mono font-bold">${r.badge}</span>` : ''}
-                </div>
-              </td>
-              <td class="p-3">
-                <span class="px-1.5 py-0.2 border text-[10px] font-bold ${getLangBadge(r.language)}">${r.language}</span>
-              </td>
-              <td class="p-3 text-right font-black text-zinc-900">${r.stars}</td>
-              <td class="p-3 text-right font-black text-zinc-900">${r.forks}</td>
-              <td class="p-3 text-right font-black text-emerald-800">${r.clones_14d}</td>
-              <td class="p-3 text-right font-black text-blue-900">${r.views_14d}</td>
-              <td class="p-3 text-right font-black text-zinc-900">${r.commits}</td>
-              <td class="p-3 text-right font-black text-zinc-900">${r.releases}</td>
-              <td class="p-3 text-right font-black text-zinc-700">${r.prs}</td>
-              <td class="p-3">
-                <span class="bg-emerald-50 text-emerald-900 border border-emerald-300 px-1.5 py-0.2 text-[10px] font-bold">${r.license}</span>
-              </td>
-            </tr>
-          `).join('');
-        }
+    tableBody.innerHTML = tableRows + totalsRow;
 
-        renderProjectCards(currentReposData);
-        renderCharts(currentReposData);
-        if (window.lucide) lucide.createIcons();
+    // ── CONTRIBUTORS GRID ─────────────────────────────────────
+    const contributors = payload.contributors || [];
+    if (contributors.length > 0) {
+      document.getElementById('section-contrib').style.display = 'flex';
+      document.getElementById('contrib-section').style.display = 'block';
 
-
-      } catch (err) {
-        console.error('Error cargando telemetría reactiva:', err);
-      }
+      const contribGrid = document.getElementById('contrib-grid');
+      contribGrid.innerHTML = contributors.map(c => `
+        <a class="contrib-card" href="${c.html_url}" target="_blank" rel="noopener">
+          <img class="contrib-avatar" src="${c.avatar_url}" alt="${c.login}" />
+          <div class="contrib-info">
+            <div class="contrib-login">@${c.login}</div>
+            <div class="contrib-sub">${c.repos_count} repos con actividad</div>
+            <div class="contrib-commits">${c.contributions} commits registrados</div>
+          </div>
+        </a>
+      `).join('');
     }
 
-    loadTelemetry();
+    // ── SHOW CTA & FOOTER ─────────────────────────────────────
+    document.getElementById('cta-section').style.display = 'block';
+    document.getElementById('site-footer').style.display = 'block';
 
-    // ── SCROLLSPY Y NAVEGACIÓN ACTIVA ──
-    const scrollContainer = document.getElementById('mainScrollContainer');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = Array.from(navLinks).map(link => document.getElementById(link.dataset.target)).filter(Boolean);
-
-    function updateActiveNav(activeId) {
-      navLinks.forEach(link => {
-        const isCurrent = link.dataset.target === activeId;
-        const icon = link.querySelector('i');
-        const badge = link.querySelector('.nav-badge');
-
-        if (isCurrent) {
-          link.className = 'nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs bg-zinc-900 text-white font-bold border border-zinc-900 transition-colors';
-          if (icon) icon.className = icon.className.replace('text-zinc-500', 'text-white');
-          if (badge) badge.className = 'nav-badge bg-zinc-800 text-zinc-200 px-1.5 py-0.2 text-[10px]';
-        } else {
-          link.className = 'nav-link w-full flex items-center justify-between px-2.5 py-2 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-transparent';
-          if (icon) icon.className = icon.className.replace('text-white', 'text-zinc-500');
-          if (badge) badge.className = 'nav-badge bg-zinc-200 text-zinc-700 px-1.5 py-0.2 text-[10px]';
-        }
-      });
+    if (meta.target) {
+      const ownEl = document.getElementById('footer-owner-text');
+      if (ownEl) ownEl.innerText = '@' + meta.target;
+    }
+    if (meta.version) {
+      const verEl = document.getElementById('footer-version');
+      if (verEl) verEl.innerText = 'v' + meta.version;
+    }
+    if (meta.links?.github) {
+      const ghEl = document.getElementById('footer-gh-link');
+      if (ghEl) ghEl.href = meta.links.github;
+    }
+    if (meta.links?.website) {
+      const webEl = document.getElementById('footer-web-link');
+      if (webEl) webEl.href = meta.links.website;
+    }
+    if (meta.brand?.tagline) {
+      const tagEl = document.getElementById('footer-tagline');
+      if (tagEl) tagEl.innerText = meta.brand.tagline;
     }
 
-    if (scrollContainer && sections.length > 0) {
-      scrollContainer.addEventListener('scroll', () => {
-        let currentSectionId = sections[0].id;
-        const containerTop = scrollContainer.scrollTop;
-        const offsetThreshold = 180;
+    lucide.createIcons();
+  }
 
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop - scrollContainer.offsetTop;
-          if (containerTop >= sectionTop - offsetThreshold) {
-            currentSectionId = section.id;
-          }
-        });
-
-        updateActiveNav(currentSectionId);
-      }, { passive: true });
-    }
+  loadTelemetry().catch(console.error);
   </script>
 </body>
 </html>

@@ -38,16 +38,36 @@
     }
   </style>
 </head>
-<body class="min-h-full flex flex-col items-center justify-center p-4 md:p-8 bg-zinc-950">
+<body class="min-h-full flex flex-col items-center bg-zinc-950 text-zinc-900 antialiased">
+
+  <!-- ── TOP BAR INSTITUCIONAL SUIZO ── -->
+  <header class="w-full border-b border-zinc-800 bg-zinc-900 px-8 h-[52px] flex items-center justify-between font-mono text-xs mb-8 sticky top-0 z-50">
+    <a class="flex items-center no-underline font-bold text-sm tracking-normal" href="index3.html"><span style="color:#71717a;font-weight:400;">{{</span><span style="color:#22c55e;font-weight:700;">shell</span><span style="color:#ffffff;font-weight:700;">aquiles</span><span style="color:#f43f5e;font-weight:700;">.org</span><span style="color:#71717a;font-weight:400;">}}</span></a>
+
+    <!-- Center GitHub Badge -->
+    <a class="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-200 text-xs font-bold transition-colors" href="https://github.com/shellaquiles" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+        <path d="M9 18c-4.51 2-5-2-7-2"></path>
+      </svg>
+      <span id="topbar-user">@shellaquiles</span>
+    </a>
+
+    <nav class="flex items-center gap-6">
+      <a href="index3.html" class="text-zinc-400 hover:text-white uppercase tracking-widest text-[11px] transition-colors">DASHBOARD</a>
+      <a href="index2.html" class="text-zinc-400 hover:text-white uppercase tracking-widest text-[11px] transition-colors">HUELLA DIGITAL</a>
+      <a href="share.html" class="font-bold text-white uppercase tracking-widest text-[11px] border-b-2 border-emerald-400 pb-0.5">CAPTURA SOCIAL</a>
+    </nav>
+  </header>
 
   <!-- ── BARRA DE HERRAMIENTAS DE CAPTURA ── -->
-  <header class="w-full max-w-[1200px] mb-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+  <div class="w-full max-w-[1200px] mb-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs px-4 md:px-0">
     <div class="flex items-center gap-3">
       <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 transition-colors">
         <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
         <span>Volver al Dashboard</span>
       </a>
-      <span class="text-zinc-500 hidden sm:inline">|</span>
+      <span class="text-zinc-600 hidden sm:inline">|</span>
       <span class="text-zinc-400 hidden sm:inline">FORMATO RECOMENDADO: 1200 × 630 px (Twitter/X, LinkedIn, OpenGraph)</span>
     </div>
 
@@ -55,11 +75,11 @@
       <i data-lucide="camera" class="w-4 h-4"></i>
       <span>Descargar Imagen PNG</span>
     </button>
-  </header>
+  </div>
 
   <!-- ── SOCIAL SHARE CARD (DIMENSIONES EXACTAS 1200x630 PX) ── -->
   <div class="w-full flex justify-center overflow-x-auto pb-8">
-    <div id="shareCard" style="width: 1200px; height: 630px; min-width: 1200px; min-height: 630px;" class="bg-white border border-zinc-300 p-10 flex flex-col justify-between shadow-2xl relative select-none box-border">
+    <div id="shareCard" style="width: 1200px; height: 630px; min-width: 1200px; min-height: 630px;" class="bg-white border border-zinc-300 p-8 flex flex-col justify-between shadow-2xl relative select-none box-border">
 
       <!-- Decoración de Borde Superior Suizo -->
       <div class="absolute top-0 left-0 right-0 h-2 bg-zinc-950 flex">
@@ -69,84 +89,76 @@
       </div>
 
       <!-- 1. HEADER DE LA TARJETA -->
-      <div class="flex items-start justify-between border-b border-zinc-200 pb-5 pt-1">
-        <div class="space-y-1">
-          <div class="flex items-center gap-3">
-            <div class="font-mono text-3xl font-black tracking-tighter flex items-center leading-none">
-              <span id="brandPrefix" class="text-emerald-600">shell</span>
-              <span id="brandMiddle" class="text-zinc-950">aquiles</span>
-              <span id="brandSuffix" class="text-rose-500">.org</span>
+      <div class="flex items-start justify-between border-b border-zinc-200 pb-4 pt-1">
+        <div class="flex items-center gap-4">
+          <!-- Avatar a la izquierda -->
+          <img id="cardAvatar" src="https://github.com/shellaquiles.png?size=128" alt="Avatar" class="w-14 h-14 rounded-full border border-zinc-300 bg-zinc-100 object-cover" />
+          
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-2xl font-bold tracking-tight">
+                <span style="color:#71717a;font-weight:400;">{{</span><span style="color:#22c55e;font-weight:700;">shell</span><span style="color:#09090b;font-weight:700;">aquiles</span><span style="color:#f43f5e;font-weight:700;">.org</span><span style="color:#71717a;font-weight:400;">}}</span>
+              </span>
+              <span class="px-2 py-0.5 bg-zinc-100 text-zinc-800 font-mono text-xs font-bold border border-zinc-300" id="cardVersion">v1.0.0</span>
             </div>
-            <span class="px-2 py-0.5 bg-zinc-100 text-zinc-800 font-mono text-xs font-bold border border-zinc-300" id="cardVersion">v1.0.0</span>
-          </div>
-          <div class="font-mono text-xs text-zinc-500 flex items-center gap-2 pt-1">
-            <span>PROYECTOS & HERRAMIENTAS OPEN SOURCE</span>
-            <span class="text-zinc-300">•</span>
-            <span id="cardUserHandle" class="text-zinc-900 font-bold">@shellaquiles</span>
+            <div class="font-mono text-xs text-zinc-500 flex items-center gap-2 pt-0.5">
+              <span>HUELLA DIGITAL & PROYECTOS OPEN SOURCE</span>
+              <span class="text-zinc-300">•</span>
+              <span id="cardUserHandle" class="text-zinc-900 font-bold">@shellaquiles</span>
+            </div>
           </div>
         </div>
 
         <!-- Badge de Antigüedad -->
         <div class="p-2.5 bg-zinc-50 border border-zinc-300 font-mono text-right">
-          <div class="text-[10px] text-zinc-500 font-bold uppercase">Trayectoria</div>
-          <div class="text-xs font-black text-zinc-950 mt-0.5" id="cardTagline">ACTIVO DESDE 2025</div>
+          <div class="text-[9px] text-zinc-500 font-bold uppercase">Trayectoria</div>
+          <div class="text-xs font-bold text-zinc-950 mt-0.5" id="cardTagline">ACTIVO DESDE AGOSTO 2025</div>
         </div>
       </div>
 
       <!-- 2. FILA COMPACTA DE KPIS (4 CAJAS) -->
-      <div class="grid grid-cols-4 gap-3 font-mono my-3">
+      <div class="grid grid-cols-4 gap-3 font-mono my-2">
 
         <!-- KPI: Proyectos -->
         <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
           <div>
             <div class="text-[9px] text-zinc-500 font-bold uppercase">Proyectos</div>
-            <div class="text-xl font-black text-zinc-950 leading-none mt-1" id="kpi-repos">-</div>
+            <div class="text-xl font-bold text-zinc-950 leading-none mt-1" id="kpi-repos">-</div>
           </div>
           <i data-lucide="layers" class="w-4 h-4 text-zinc-700"></i>
+        </div>
+
+        <!-- KPI: Stars -->
+        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] text-amber-700 font-bold uppercase">Stars</div>
+            <div class="text-xl font-bold text-zinc-950 leading-none mt-1" id="kpi-stars">-</div>
+          </div>
+          <i data-lucide="star" class="w-4 h-4 text-amber-600 fill-amber-600"></i>
         </div>
 
         <!-- KPI: Commits -->
         <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
           <div>
             <div class="text-[9px] text-blue-900 font-bold uppercase">Commits</div>
-            <div class="text-xl font-black text-blue-900 leading-none mt-1" id="kpi-commits">-</div>
+            <div class="text-xl font-bold text-blue-900 leading-none mt-1" id="kpi-commits">-</div>
           </div>
           <i data-lucide="git-commit" class="w-4 h-4 text-[#1e3a8a]"></i>
-        </div>
-
-        <!-- KPI: Comunidad (Stars + Forks) -->
-        <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
-          <div>
-            <div class="text-[9px] text-amber-700 font-bold uppercase">Comunidad</div>
-            <div class="text-xl font-black text-zinc-950 leading-none mt-1 flex items-baseline gap-1.5">
-              <span id="kpi-stars">-</span>
-              <span class="text-[11px] font-normal text-zinc-500" id="kpi-forks">- forks</span>
-            </div>
-          </div>
-          <i data-lucide="star" class="w-4 h-4 text-amber-600 fill-amber-600"></i>
         </div>
 
         <!-- KPI: Clones -->
         <div class="p-2.5 bg-zinc-50 border border-zinc-300 flex items-center justify-between">
           <div>
-            <div class="text-[9px] text-emerald-800 font-bold uppercase">Clones Recientes</div>
-            <div class="text-xl font-black text-emerald-800 leading-none mt-1" id="kpi-clones">-</div>
+            <div class="text-[9px] text-emerald-800 font-bold uppercase">Clones 14d</div>
+            <div class="text-xl font-bold text-emerald-800 leading-none mt-1" id="kpi-clones">-</div>
           </div>
           <i data-lucide="download" class="w-4 h-4 text-[#046a38]"></i>
         </div>
 
       </div>
 
-      <!-- 3. MATRIZ TÉCNICA DE TELEMETRÍA (TABLA CONSOLIDADA) -->
+      <!-- 3. HUELLA TÉCNICA Y RENDIMIENTO POR PROYECTO (TABLA CONSOLIDADA) -->
       <div class="border border-zinc-300 bg-white font-mono shadow-sm">
-        <div class="px-4 py-2 border-b border-zinc-200 flex items-center justify-between bg-zinc-50">
-          <div class="flex items-center gap-2">
-            <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-[#1e3a8a]"></i>
-            <span class="text-xs font-bold text-zinc-950 uppercase tracking-widest">Matriz Técnica de Telemetría</span>
-          </div>
-          <span class="text-[9px] text-zinc-500 font-bold tracking-wider uppercase">Métricas Consolidadas</span>
-        </div>
-
         <table class="w-full text-left text-xs">
           <thead>
             <tr class="border-b border-zinc-300 text-[10px] text-zinc-500 uppercase tracking-wider bg-white">
@@ -247,8 +259,12 @@
         if (meta.target) {
           const uh = document.getElementById('cardUserHandle');
           const ft = document.getElementById('cardFooterTarget');
+          const tb = document.getElementById('topbar-user');
+          const av = document.getElementById('cardAvatar');
           if (uh) uh.innerText = `@${meta.target}`;
           if (ft) ft.innerText = meta.target;
+          if (tb) tb.innerText = `@${meta.target}`;
+          if (av) av.src = `https://github.com/${meta.target}.png?size=128`;
         }
 
         if (meta.version) {
@@ -270,9 +286,8 @@
 
         // 2. Poblar KPIs de las 4 cajas
         if (summary.total_repos !== undefined) document.getElementById('kpi-repos').innerText = summary.total_repos;
-        if (summary.total_commits !== undefined) document.getElementById('kpi-commits').innerText = summary.total_commits;
         if (summary.total_stars !== undefined) document.getElementById('kpi-stars').innerText = summary.total_stars;
-        if (summary.total_forks !== undefined) document.getElementById('kpi-forks').innerText = `+${summary.total_forks} forks`;
+        if (summary.total_commits !== undefined) document.getElementById('kpi-commits').innerText = summary.total_commits;
         if (summary.total_clones_14d !== undefined) document.getElementById('kpi-clones').innerText = summary.total_clones_14d;
 
         // 3. Render Matriz en la Tarjeta

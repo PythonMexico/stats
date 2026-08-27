@@ -1,18 +1,56 @@
 {
   "target": "shellaquiles",
   "is_org": true,
-  "title": "stats.shellaquiles.org — Telemetría Open Source",
+  "title": "stats.shellaquiles.org — Huella Digital & Métricas Open Source",
   "brand": {
     "prefix": "shell",
     "middle": "aquiles",
-    "suffix": ".org",
-    "prefix_color": "#22c55e",
-    "suffix_color": "#f43f5e"
+    "suffix": " // stats",
+    "prefix_color": "#046a38",
+    "suffix_color": "#1e3a8a",
+    "tagline": "ACTIVIDAD DEL ECOSISTEMA // OPEN SOURCE"
   },
   "links": {
     "github": "https://github.com/shellaquiles",
     "website": "https://shellaquiles.org"
   },
   "exclude_repos": ["stats"],
-  "custom_repo_overrides": {}
+  "custom_repo_overrides": {
+    "cron-quiles": {
+      "badge": "CLI TOOLING",
+      "featured": true,
+      "accent_color": "border-t-[#046a38]",
+      "icon": "terminal"
+    },
+    "tribuTACOS": {
+      "badge": "CFDI 4.0 / FISCAL",
+      "featured": true,
+      "accent_color": "border-t-[#1e3a8a]",
+      "icon": "receipt"
+    },
+    "pandocquiles": {
+      "badge": "DOCS ENGINE",
+      "featured": true,
+      "accent_color": "border-t-[#b45309]",
+      "icon": "file-text"
+    },
+    "KARNITAS": {
+      "badge": "AGENT RUNTIME",
+      "featured": true,
+      "accent_color": "border-t-[#09090b]",
+      "icon": "cpu"
+    },
+    "shellaquiles-org": {
+      "badge": "PORTAL CORE",
+      "featured": false,
+      "accent_color": "border-t-[#1e3a8a]",
+      "icon": "globe"
+    },
+    "frases-chingonas": {
+      "badge": "CSS / UI LIB",
+      "featured": false,
+      "accent_color": "border-t-zinc-400",
+      "icon": "sparkles"
+    }
+  }
 }
