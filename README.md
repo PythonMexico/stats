@@ -4,19 +4,19 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Chart.js](https://img.shields.io/badge/Chart.js-FF6384.svg?style=flat-square&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33.svg?style=flat-square&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF.svg?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 
 <br />
 
-> **Dashboard estático y reactivo para monitorear telemetría, tráfico y colaboradores de cualquier cuenta u organización de GitHub.**
+> **Dashboard estático, reactivo y de alta fidelidad para monitorear huella digital, actividad, métricas de adopción y colaboradores de cualquier cuenta u organización de GitHub.**
 
 </div>
 
 ---
 
-## Guía de Replicación
+## ⚡ Guía de Replicación Rápida (Zero-Config)
 
 ### 1. Crear Fork del Repositorio
 Hacer click en el botón **Fork** en la cabecera de esta página para generar tu propia copia en GitHub.
@@ -24,30 +24,20 @@ Hacer click en el botón **Fork** en la cabecera de esta página para generar tu
 ---
 
 ### 2. Definir Configuración en `config.json`
-Actualizar [`config.json`](file:///config.json) con los parámetros del usuario u organización objetivo:
+Solo necesitas especificar el usuario u organización objetivo en [`config.json`](file:///config.json):
 
 ```json
 {
-  "target": "TU_USUARIO_O_TU_ORGANIZACION",
-  "is_org": false,
-  "title": "stats — Telemetría Open Source",
-  "brand": {
-    "prefix": "mi",
-    "middle": "perfil",
-    "suffix": ".dev",
-    "prefix_color": "#22c55e",
-    "suffix_color": "#f43f5e"
-  },
-  "links": {
-    "github": "https://github.com/TU_USUARIO",
-    "website": "https://miweb.com"
-  },
-  "exclude_repos": ["stats"]
+  "target": "TU_USUARIO_O_TU_ORGANIZACION"
 }
 ```
 
-> [!TIP]
-> **Configuración mediante Variables de Entorno**: También puedes definir los parámetros sin tocar archivos mediante las *Secrets / Variables* de GitHub Actions: `STATS_TARGET`, `STATS_IS_ORG`, etc. Ver [`.env.example`](file:///.env.example).
+> [!NOTE]
+> Todo lo demás es **100% automático**:
+> - Auto-detección de usuario vs organización (`User` / `Organization`).
+> - Filtro automático de repositorios originales (descarta forks de terceros con `--source`).
+> - Cálculo dinámico de trayectoria y antigüedad a partir del repositorio más antiguo.
+> - Auto-generación de tarjetas sociales OpenGraph / Twitter en resolución Retina 2x (`og-preview.png`).
 
 ---
 
@@ -57,9 +47,6 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 3. En **Branch**, seleccionar la rama **`gh-pages`** y directorio `/(root)`.
 4. Guardar los cambios.
 
-> [!NOTE]
-> Si la rama `gh-pages` aún no aparece en la lista desplegable, se creará automáticamente tras ejecutar la primera sincronización (Paso 4).
-
 ---
 
 ### 4. Ejecutar la Sincronización
@@ -68,7 +55,7 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 1. Ir a la pestaña **Actions** en el repositorio.
 2. Seleccionar el workflow **`Auto-Sync Telemetry & Deploy to GitHub Pages`**.
 3. Hacer click en **Run workflow**.
-4. El pipeline extraerá los datos, compilará `data.json` y desplegará a `gh-pages`. El cron continuará ejecutándose automáticamente **1 vez al día (06:00 UTC)**.
+4. El pipeline extraerá los datos, compilará `data.json`, generará `og-preview.png` y desplegará a `gh-pages`. El cron continuará ejecutándose automáticamente **1 vez al día (06:00 UTC)**.
 
 #### Localmente
 ```bash
@@ -78,14 +65,13 @@ gh auth login
 # 2. Desarrollo con Makefile (extrae telemetría y levanta http://localhost:8000)
 make dev
 
-# O ejecutando los comandos por separado:
-python3 update_metrics.py
-python3 -m http.server 8000
+# 3. Generar tarjeta para redes sociales en alta resolución
+make preview
 ```
 
 ---
 
-## Arquitectura de Datos y Flujo de Trabajo
+## 🏗️ Arquitectura de Datos y Flujo de Trabajo
 
 ```mermaid
 flowchart TD
@@ -94,7 +80,7 @@ flowchart TD
     end
 
     subgraph Extractor
-        CLI["GitHub API (gh)"]
+        CLI["GitHub API (gh CLI)"]
         EXT["update_metrics.py"]
         DATA["data.json"]
         CFG --> EXT
@@ -102,8 +88,15 @@ flowchart TD
         EXT --> DATA
     end
 
+    subgraph Vista Previa Social
+        PREV["generate_preview.py (Playwright)"]
+        CARD["og-preview.png (2400x1260 px)"]
+        DATA --> PREV
+        PREV --> CARD
+    end
+
     subgraph Frontend
-        UI["index.html (SPA Reactiva)"]
+        UI["index.html (Swiss Minimalist SPA)"]
         DATA -.->|Fetch Asíncrono| UI
         CHARTS["Chart.js + Lucide Icons"]
         UI --> CHARTS
@@ -112,6 +105,7 @@ flowchart TD
     subgraph Despliegue
         GHA["GitHub Actions (Cron 1x/día)"]
         GHA --> EXT
+        GHA --> PREV
         GHA -->|force_orphan: true| GHP["Rama gh-pages"]
         GHP --> LIVE["GitHub Pages"]
     end
@@ -119,39 +113,36 @@ flowchart TD
 
 ---
 
-## Estructura del Directorio
+## 📁 Estructura del Directorio
 
 ```text
 ├── .github/
 │   └── workflows/
 │       └── sync_metrics.yml   # Automatización CI/CD y despliegue a gh-pages
-├── config.json                # Configuración declarativa
-├── .env.example               # Plantilla de variables de entorno
-├── update_metrics.py          # Extractor de datos (Single Responsibility Principle)
-├── index.html                 # Interfaz visual reactiva (Swiss Minimalist)
-├── Makefile                   # Comandos rápidos de desarrollo local
+├── config.json                # Configuración declarativa mínima (target)
+├── update_metrics.py          # Extractor de datos puro (Single Responsibility Principle)
+├── generate_preview.py        # Motor de renderizado OpenGraph con Playwright
+├── share.html                 # Plantilla base para exportación de preview social
+├── index.html                 # Interfaz visual reactiva suiza (Full-width, sortable)
+├── og-preview.png             # Vista previa generada para redes sociales (2400x1260 px)
+├── Makefile                   # Comandos rápidos de desarrollo y automatización
+├── VERSION                    # Single source of truth de versión (SemVer)
 ├── CHANGELOG.md               # Registro histórico de versiones
 └── README.md                  # Documentación técnica
 ```
 
 ---
 
-## Stack Tecnológico
+## 🛠️ Stack Tecnológico
 
-- **Frontend**: HTML5 Semántico, JavaScript Moderno (ESModules / Async Fetch).
-- **Estilos**: Tailwind CSS, tipografías Inter y JetBrains Mono.
-- **Gráficos**: Chart.js y Lucide Icons.
+- **Frontend**: HTML5 Semántico, Vanilla CSS (Swiss Minimalist Design System), JavaScript Moderno asíncrono.
+- **Gráficos & Componentes**: Chart.js (Radar de Ecosistema multieje) y Lucide Icons.
 - **Backend / Extractor**: Python 3.10+ (`dataclasses`, `pathlib`, `logging`, `subprocess`).
-- **Infraestructura**: GitHub CLI, GitHub Actions y GitHub Pages.
+- **Renderizado Social**: Playwright / Headless Chromium para exportación Retina 2x de `og-preview.png`.
+- **Infraestructura**: GitHub CLI, GitHub Actions y GitHub Pages (rama aislada `gh-pages`).
 
 ---
 
-## Registro de Cambios
+## 📜 Licencia
 
-Consulta el archivo [`CHANGELOG.md`](file:///CHANGELOG.md) para ver el historial detallado de cambios y versiones del proyecto.
-
----
-
-## Licencia
-
-Distribuido bajo la licencia [MIT](https://opensource.org/licenses/MIT).
+Distribuido bajo la licencia **MIT**. Consulta el archivo `LICENSE` para más información.
