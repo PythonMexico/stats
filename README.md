@@ -70,13 +70,14 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 
 #### Localmente
 ```bash
-# Autenticación en GitHub CLI
+# 1. Autenticación en GitHub CLI (solo una vez)
 gh auth login
 
-# Extracción de métricas
-python3 update_metrics.py
+# 2. Opción rápida con Makefile (extrae datos y levanta servidor en http://localhost:8000)
+make dev
 
-# Servidor de previsualización local
+# O ejecutando los comandos manualmente:
+python3 update_metrics.py
 python3 -m http.server 8000
 ```
 
