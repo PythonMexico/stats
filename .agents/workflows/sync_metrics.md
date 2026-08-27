@@ -1,11 +1,11 @@
 ---
 name: sync-metrics
-description: Actualiza los datos de tráfico, referrers, métricas acumuladas y contribuidores del ecosistema Shellaquiles desde GitHub.
+description: Actualiza los datos de tráfico, referrers, métricas acumuladas y colaboradores desde GitHub y genera data.json.
 ---
 
 # Sync Metrics Workflow
 
-Este workflow automatiza la recolección de analíticas de GitHub y regenera el dashboard de presentación.
+Este workflow ejecuta la recolección desatendida de telemetría de GitHub y compila `data.json`.
 
 ## Pasos de Ejecución
 
@@ -14,15 +14,20 @@ Este workflow automatiza la recolección de analíticas de GitHub y regenera el 
    gh auth status
    ```
 
-2. **Ejecutar script extractor**:
+2. **Ejecutar extracción local / desarrollo**:
    ```bash
-   python3 update_metrics.py
+   make sync
+   # O directamente: python3 update_metrics.py
    ```
 
-3. **Verificar archivos modificados**:
+3. **Verificar estado de Git**:
    ```bash
    git status
    ```
+   > Nota: `data.json` se encuentra ignorado en `.gitignore` para mantener limpio el árbol de trabajo.
 
 4. **Validar visualización**:
-   Abre `index.html` para comprobar que las gráficas, la tabla de tráfico, los referrers y el cuadro de honor reflejen los datos más recientes.
+   ```bash
+   make dev
+   ```
+   Abre [http://localhost:8000](http://localhost:8000) para verificar que las gráficas, la telemetría de tráfico, los referrers y el cuadro de honor reflejen los datos más recientes.

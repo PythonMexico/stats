@@ -1,40 +1,53 @@
-# Shellaquiles Stats — Contexto del Proyecto
+# Contexto Arquitectónico y del Ecosistema
 
-Guía de arquitectura, convenciones y flujos para el repositorio **`shellaquiles/stats`**.
-
----
-
-## 1. Propósito del Proyecto
-`stats` es el módulo de observabilidad, analíticas de adopción y cuadro de honor de la organización **Shellaquiles** en GitHub.
-Su objetivo es consolidar métricas acumuladas de toda la vida de los proyectos públicos, tráfico en ventana activa, fuentes de origen (*referrers*) y la comunidad de desarrolladores/colaboradores que contribuyen al ecosistema.
+Guía de arquitectura, diseño y convenciones técnicas para el motor **`shellaquiles/stats`**.
 
 ---
 
-## 2. Componentes Clave
-
-- **`index.html`**:
-  - Interfaz web interactiva construida bajo el **Estilo Suizo Minimalista (*International Typographic Style*)**.
-  - Sin degradados artificiales; uso estricto de colores sólidos institucionales (Azul `#1e3a8a`, Verde `#046a38`, Ámbar `#b45309`, Zinc `#09090b` / `#f8fafc`).
-  - Rejilla rígida con bordes de 1px (`border-zinc-300`).
-  - Iconografía vectorial **Lucide Icons** vía CDN (`https://unpkg.com/lucide@latest`).
-  - Gráficas con **Chart.js** (`chartStarsForks`, `chartCommits`).
-
-- **`update_metrics.py`**:
-  - Script en Python que consulta GitHub CLI (`gh api` y `gh repo view`).
-  - Extrae métricas de los 6 proyectos de la organización: `cron-quiles`, `tribuTACOS`, `shellaquiles-org`, `pandocquiles`, `KARNITAS`, `frases-chingonas`.
-  - Filtra bots automatizados (`actions-user`, `[bot]`) para mostrar únicamente contribuidores humanos en el Cuadro de Honor.
-  - Genera `data.json` y actualiza automáticamente los arrays y contadores en `index.html`.
-
-- **`data.json`**:
-  - Dataset consolidado con las llaves `repos`, `referrers` y `contributors`.
+## 1. Propósito y Modelo de Distribución
+`stats` es un motor de observabilidad, telemetría y analíticas de tráfico para organizaciones y usuarios de GitHub.
+Diseñado para ser **100% replicable y forkeable** mediante configuración declarativa (`config.json`), desacoplando por completo el backend extractor del frontend.
 
 ---
 
-## 3. Comandos de Trabajo
+## 2. Componentes del Sistema
 
-- **Actualizar datos desde GitHub**:
-  ```bash
-  python3 update_metrics.py
-  ```
-- **Visualizar localmente**:
-  Abrir `index.html` en cualquier navegador web moderno o servir con `python3 -m http.server 8080`.
+- **`update_metrics.py` (Extractor Backend / SRP)**:
+  - Consulta GitHub CLI (`gh api` y `gh repo view`).
+  - Autodescubre repositorios públicos activos sin configuración manual.
+  - Normaliza canales de tráfico y fuentes de llegada (*referrers*).
+  - Filtra bots y automatizaciones (`dependabot`, `github-actions`, etc.).
+  - Computa la antigüedad del ecosistema automáticamente (`active_since`).
+  - Exporta el dataset estructurado a `data.json`.
+
+- **`index.html` (Frontend Reactivo / Swiss Minimalist System)**:
+  - Single Page Application estática construida bajo el **Swiss Minimalist System**.
+  - Tipografía `Inter` + `JetBrains Mono`, bordes de 1px (`border-zinc-300`) y cero degradados.
+  - Consume `data.json` asíncronamente mediante `fetch()`.
+  - Iconografía vectorial con **Lucide Icons** y gráficos con **Chart.js**.
+  - Incluye crédito institucional permanente a **Shellaquiles** en el footer.
+
+- **`config.json` / `.env` (Capa de Configuración)**:
+  - Define usuario/organización objetivo, títulos, branding y exclusiones de repositorios.
+
+- **`.github/workflows/sync_metrics.yml` (CI/CD)**:
+  - Tarea programada (cron 2 veces al día) y manual (`workflow_dispatch`).
+  - Publica `index.html` + `data.json` a la rama aislada **`gh-pages`** con `force_orphan: true`.
+  - **Zero-Commit Git Pollution**: Las ramas `main` y `dev` se mantienen libres de commits automáticos.
+
+- **`Makefile`**:
+  - `make dev`: Extrae datos y levanta servidor HTTP local en `http://localhost:8000`.
+  - `make sync`: Ejecuta únicamente la extracción de datos.
+  - `make clean`: Limpia artefactos temporales y cachés locales.
+
+---
+
+## 3. Flujo de Trabajo Local
+
+```bash
+# 1. Desarrollo con un solo comando:
+make dev
+
+# 2. Servidor activo en:
+# http://localhost:8000
+```
