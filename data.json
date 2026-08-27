@@ -54,10 +54,10 @@
       "contributors": 11,
       "language": "Python",
       "license": "MIT",
-      "clones_14d": 494,
-      "clones_uniques_14d": 291,
-      "views_14d": 3,
-      "uniques_14d": 3,
+      "clones_14d": 0,
+      "clones_uniques_14d": 0,
+      "views_14d": 0,
+      "uniques_14d": 0,
       "releases": 9,
       "prs": 30,
       "featured": true,
@@ -79,10 +79,10 @@
       "contributors": 1,
       "language": "Python",
       "license": "MIT",
-      "clones_14d": 17,
-      "clones_uniques_14d": 15,
-      "views_14d": 77,
-      "uniques_14d": 32,
+      "clones_14d": 0,
+      "clones_uniques_14d": 0,
+      "views_14d": 0,
+      "uniques_14d": 0,
       "releases": 3,
       "prs": 3,
       "featured": false,
@@ -90,23 +90,7 @@
       "icon": "file-text",
       "accentColor": "border-t-[#b45309]",
       "topics": [],
-      "referrers": [
-        {
-          "referrer": "LinkedIn",
-          "count": 8,
-          "uniques": 5
-        },
-        {
-          "referrer": "Telegram",
-          "count": 3,
-          "uniques": 2
-        },
-        {
-          "referrer": "Google Search",
-          "count": 1,
-          "uniques": 1
-        }
-      ]
+      "referrers": []
     },
     {
       "name": "KARNITAS",
@@ -120,10 +104,10 @@
       "contributors": 1,
       "language": "Shell",
       "license": "MIT",
-      "clones_14d": 9,
-      "clones_uniques_14d": 9,
-      "views_14d": 11,
-      "uniques_14d": 6,
+      "clones_14d": 0,
+      "clones_uniques_14d": 0,
+      "views_14d": 0,
+      "uniques_14d": 0,
       "releases": 0,
       "prs": 2,
       "featured": false,
@@ -131,18 +115,7 @@
       "icon": "cpu",
       "accentColor": "border-t-[#1e3a8a]",
       "topics": [],
-      "referrers": [
-        {
-          "referrer": "LinkedIn",
-          "count": 1,
-          "uniques": 1
-        },
-        {
-          "referrer": "Telegram",
-          "count": 1,
-          "uniques": 1
-        }
-      ]
+      "referrers": []
     },
     {
       "name": "shellaquiles-org",
@@ -156,10 +129,10 @@
       "contributors": 1,
       "language": "JavaScript",
       "license": "GNU GPL-3.0",
-      "clones_14d": 4,
-      "clones_uniques_14d": 4,
-      "views_14d": 1,
-      "uniques_14d": 1,
+      "clones_14d": 0,
+      "clones_uniques_14d": 0,
+      "views_14d": 0,
+      "uniques_14d": 0,
       "releases": 0,
       "prs": 3,
       "featured": false,
@@ -181,10 +154,10 @@
       "contributors": 1,
       "language": "CSS",
       "license": "GNU GPL-3.0",
-      "clones_14d": 3,
-      "clones_uniques_14d": 3,
-      "views_14d": 4,
-      "uniques_14d": 1,
+      "clones_14d": 0,
+      "clones_uniques_14d": 0,
+      "views_14d": 0,
+      "uniques_14d": 0,
       "releases": 0,
       "prs": 2,
       "featured": false,
@@ -195,26 +168,7 @@
       "referrers": []
     }
   ],
-  "referrers": [
-    {
-      "name": "LinkedIn",
-      "views": 9,
-      "uniques": 6,
-      "icon": "share-2"
-    },
-    {
-      "name": "Telegram",
-      "views": 4,
-      "uniques": 3,
-      "icon": "send"
-    },
-    {
-      "name": "Google Search",
-      "views": 1,
-      "uniques": 1,
-      "icon": "search"
-    }
-  ],
+  "referrers": [],
   "contributors": [
     {
       "login": "pixelead0",
