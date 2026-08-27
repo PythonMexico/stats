@@ -5,22 +5,18 @@ import threading
 from pathlib import Path
 from playwright.async_api import async_playwright
 
+import functools
+
 PORT = 8899
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-class QuietHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(BASE_DIR), **kwargs)
-
-    def log_message(self, format, *args):
-        pass
 
 httpd_server = None
 
 def run_server():
     global httpd_server
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), QuietHandler) as httpd:
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(BASE_DIR))
+    with socketserver.TCPServer(("127.0.0.1", PORT), handler) as httpd:
         httpd_server = httpd
         httpd.serve_forever()
 

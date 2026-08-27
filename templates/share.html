@@ -293,10 +293,11 @@
         if (summary.total_commits !== undefined) document.getElementById('kpi-commits').innerText = summary.total_commits;
         if (summary.total_clones_14d !== undefined) document.getElementById('kpi-clones').innerText = summary.total_clones_14d;
 
-        // 3. Render Matriz en la Tarjeta
+        // 3. Render Matriz en la Tarjeta (Top 5 repositorios para composición visual óptima)
         const tbody = document.getElementById('cardTableBody');
         if (tbody) {
-          tbody.innerHTML = repos.map(r => `
+          const topRepos = repos.slice(0, 5);
+          tbody.innerHTML = topRepos.map(r => `
             <tr class="hover:bg-zinc-50 transition-colors">
               <td class="p-2 font-bold">
                 <div class="flex items-center gap-1.5">

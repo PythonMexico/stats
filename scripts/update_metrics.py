@@ -98,7 +98,7 @@ class ExtractorConfig:
     links: dict[str, str] = field(default_factory=dict)
     exclude_repos: frozenset[str] = field(default_factory=frozenset)
     repo_overrides: dict[str, RepoVisualOverride] = field(default_factory=dict)
-    output_json: Path = field(default_factory=lambda: Path("data.json"))
+    output_json: Path = field(default_factory=lambda: Path(__file__).resolve().parent.parent / "data.json")
 
     @classmethod
     def from_source(cls, config_path: Optional[Path] = None) -> ExtractorConfig:

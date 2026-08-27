@@ -8,18 +8,19 @@
   <!-- OpenGraph / WhatsApp / Telegram / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="shellaquiles.org" />
-  <meta property="og:title" content="Estadísticas de proyectos públicos por @shellaquiles en GitHub" id="og-title" />
+  <meta property="og:title" content="Estadísticas de @shellaquiles en GitHub 📊 ¡Crea tu dashboard gratis!" id="og-title" />
   <meta property="og:description" content="Descubre el alcance real de tus proyectos de código abierto. ¿Cuánto impacto tienen tus repositorios? Genera tu dashboard gratis con un fork." id="og-desc" />
-  <meta property="og:image" content="og-preview.png" />
+  <meta property="og:image" content="./og-preview.png" />
+  <meta property="og:image:secure_url" content="./og-preview.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Estadísticas de proyectos públicos por @shellaquiles en GitHub" id="twitter-title" />
+  <meta name="twitter:title" content="Estadísticas de @shellaquiles en GitHub 📊 ¡Crea tu dashboard gratis!" id="twitter-title" />
   <meta name="twitter:description" content="Descubre el alcance real de tus proyectos de código abierto. ¿Cuánto impacto tienen tus repositorios? Genera tu dashboard gratis con un fork." id="twitter-desc" />
-  <meta name="twitter:image" content="og-preview.png" />
+  <meta name="twitter:image" content="./og-preview.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -603,12 +604,13 @@
     // ── Hydrate handles & Avatar ──────────────────────────────
     document.title = `@${handle} | Stats GitHub`;
     const descText = `Descubre el alcance real de los proyectos de código abierto de @${handle}. ¿Cuánto impacto tienen tus repositorios? Genera tu dashboard gratis con un fork.`;
+    const socialTitle = `Estadísticas de @${handle} en GitHub 📊 ¡Crea tu dashboard gratis!`;
     const ogTitleEl = document.getElementById('og-title');
-    if (ogTitleEl) ogTitleEl.setAttribute('content', `Estadísticas de proyectos públicos por @${handle} en GitHub`);
+    if (ogTitleEl) ogTitleEl.setAttribute('content', socialTitle);
     const ogDescEl = document.getElementById('og-desc');
     if (ogDescEl) ogDescEl.setAttribute('content', descText);
     const twTitleEl = document.getElementById('twitter-title');
-    if (twTitleEl) twTitleEl.setAttribute('content', `Estadísticas de proyectos públicos por @${handle} en GitHub`);
+    if (twTitleEl) twTitleEl.setAttribute('content', socialTitle);
     const twDescEl = document.getElementById('twitter-desc');
     if (twDescEl) twDescEl.setAttribute('content', descText);
 
