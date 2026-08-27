@@ -395,12 +395,33 @@ class GitHubTelemetryExtractor:
             global_referrers.values(), key=lambda x: x["views"], reverse=True
         )
 
+        # Computar fecha de inicio más antigua automáticamente (Earliest Repo Created At)
+        creation_dates = [d["created_at"] for d in repos_data if d.get("created_at")]
+        earliest_date = min(creation_dates) if creation_dates else "2026-01-01"
+        
+        # Mapeo a formato legible en español (ej. AGOSTO 2025)
+        month_names = {
+            "01": "ENERO", "02": "FEBRERO", "03": "MARZO", "04": "ABRIL",
+            "05": "MAYO", "06": "JUNIO", "07": "JULIO", "08": "AGOSTO",
+            "09": "SEPTIEMBRE", "10": "OCTUBRE", "11": "NOVIEMBRE", "12": "DICIEMBRE"
+        }
+        parts = earliest_date.split("-")
+        if len(parts) >= 2 and parts[1] in month_names:
+            auto_tagline = f"ACTIVO DESDE {month_names[parts[1]]} {parts[0]}"
+        else:
+            auto_tagline = f"ACTIVO DESDE {earliest_date[:4]}"
+
+        brand_dict = asdict(self.config.brand)
+        if not os.getenv("STATS_TAGLINE"):
+            brand_dict["tagline"] = auto_tagline
+
         payload = {
             "meta": {
                 "target": self.config.target,
                 "is_org": self.config.is_org,
                 "title": self.config.title,
-                "brand": asdict(self.config.brand),
+                "active_since": earliest_date,
+                "brand": brand_dict,
                 "links": self.config.links,
             },
             "summary": {
