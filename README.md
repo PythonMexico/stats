@@ -90,18 +90,32 @@ make preview
 
 ```mermaid
 flowchart LR
-    GH[GitHub API] --> PY[update_metrics.py]
+    GH[GitHub API] --> PY[scripts/update_metrics.py]
     PY --> DATA[data.json]
     DATA --> HTML[index.html]
-    DATA --> SHOT[generate_preview.py]
+    DATA --> SHOT[scripts/generate_preview.py]
     SHOT --> IMG[og-preview.png]
     HTML --> GHP[gh-pages]
     IMG --> GHP
 ```
 
+```text
+├── .github/workflows/sync_metrics.yml   # Automatización CI/CD
+├── scripts/
+│   ├── update_metrics.py               # Extractor de datos (GitHub API)
+│   └── generate_preview.py             # Generador de tarjeta social (Playwright)
+├── templates/
+│   └── share.html                      # Plantilla para la captura social
+├── index.html                          # Dashboard web interactivo
+├── Makefile                            # Comandos de desarrollo local
+├── VERSION                             # Versión oficial (1.0.0)
+├── CHANGELOG.md                        # Historial de cambios
+└── README.md                           # Documentación del proyecto
+```
+
 - **Extractor**: Python puro con GitHub CLI (`gh`). Filtra forks (`--source`), auto-detecta usuario/org y calcula antigüedad.
 - **Frontend**: HTML5, Vanilla CSS y Vanilla JS. Sin frameworks pesados. Gráficos con Chart.js e iconos Lucide.
-- **Captura Social**: Playwright headless renderizando `share.html` a escala 2x Retina.
+- **Captura Social**: Playwright headless renderizando `templates/share.html` a escala 2x Retina.
 - **Despliegue**: GitHub Actions publicando a rama huérfana `gh-pages`.
 
 ---

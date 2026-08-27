@@ -229,8 +229,11 @@
 
     async function loadCardData() {
       try {
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error('data.json no encontrado');
+        let res = await fetch('../data.json').catch(() => null);
+        if (!res || !res.ok) {
+          res = await fetch('/data.json').catch(() => null);
+        }
+        if (!res || !res.ok) throw new Error('data.json no encontrado');
         const payload = await res.json();
 
         const meta = payload.meta || {};

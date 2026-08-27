@@ -44,12 +44,12 @@ dev: sync serve
 
 sync:
 	@printf "  $(BLUE)📡 Extrayendo telemetría de GitHub vía gh CLI...$(RESET)\n"
-	@$(PYTHON) update_metrics.py
+	@$(PYTHON) scripts/update_metrics.py
 	@printf "  $(EMERALD)✔ data.json actualizado correctamente.$(RESET)\n"
 
 preview:
 	@printf "  $(AMBER)📸 Renderizando tarjeta de alta resolución (2x Retina)...$(RESET)\n"
-	@$(PYTHON) generate_preview.py
+	@$(PYTHON) scripts/generate_preview.py
 
 serve:
 	@printf "\n  $(BOLD)$(EMERALD)🚀 Servidor local activo:$(RESET) $(CYAN)http://localhost:$(PORT)$(RESET)\n"

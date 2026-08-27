@@ -6,9 +6,12 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 PORT = 8899
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(BASE_DIR), **kwargs)
+
     def log_message(self, format, *args):
         pass
 
@@ -34,7 +37,7 @@ async def generate_screenshot():
         )
         page = await context.new_page()
         
-        url = f"http://localhost:{PORT}/share.html"
+        url = f"http://localhost:{PORT}/templates/share.html"
         await page.goto(url, wait_until="networkidle")
         
         # Esperar a que la tarjeta esté hidratada

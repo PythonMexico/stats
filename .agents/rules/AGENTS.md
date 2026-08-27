@@ -1,10 +1,9 @@
 # Reglas — GitHub Telemetry Engine
 
 ## 1. Arquitectura (SRP)
-- **`update_metrics.py`**: Extractor puro. Filtra `--source` (`isFork: false`), auto-detecta `User`/`Org` y exporta `data.json`. Prohibido mutar HTML.
+- **`scripts/update_metrics.py`**: Extractor puro. Filtra `--source` (`isFork: false`), auto-detecta `User`/`Org` y exporta `data.json`. Prohibido mutar HTML.
 - **`index.html`**: Hidratación reactiva con `fetch('data.json')`. Cero datos hardcodeados. Tabla sortable interactiva.
-- **`generate_preview.py`**: Renderiza `og-preview.png` (2400x1260 px) vía Playwright sobre `share.html`.
-- **`config.json`**: Zero-Config (`"target": "USER"`).
+- **`scripts/generate_preview.py`**: Renderiza `og-preview.png` (2400x1260 px) vía Playwright sobre `templates/share.html`.
 - **Despliegue**: Solo a rama aislada `gh-pages`. `main`/`dev` sin commits de bots.
 
 ## 2. Estilo Visual (Swiss Minimalist)
