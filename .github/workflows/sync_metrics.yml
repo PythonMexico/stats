@@ -1,4 +1,4 @@
-name: Auto-Sync Telemetry Metrics
+name: Auto-Sync Telemetry & Deploy to GitHub Pages
 
 on:
   schedule:
@@ -14,31 +14,31 @@ permissions:
   contents: write
 
 jobs:
-  sync:
+  telemetry-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python Environment
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Run Metric Discovery & Update
+      - name: Extract Telemetry Data
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 update_metrics.py
 
-      - name: Commit and Push if Changed
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add index.html data.json
-          if git diff --staged --quiet; then
-            echo "No hay cambios en métricas ni nuevos repositorios."
-          else
-            git commit -m "chore(telemetry): auto-sync github metrics & new repos [skip ci]"
-            git push
-          fi
+      - name: Deploy to GitHub Pages Branch (gh-pages)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./
+          keep_files: false
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'deploy(telemetry): auto-publish latest metrics to gh-pages [skip ci]'

@@ -1,0 +1,19 @@
+{
+  "target": "shellaquiles",
+  "is_org": true,
+  "title": "stats.shellaquiles.org — Telemetría Open Source",
+  "brand": {
+    "prefix": "shell",
+    "middle": "aquiles",
+    "suffix": ".org",
+    "prefix_color": "#22c55e",
+    "suffix_color": "#f43f5e",
+    "tagline": "ACTIVO DESDE AGOSTO 2025"
+  },
+  "links": {
+    "github": "https://github.com/shellaquiles",
+    "website": "https://shellaquiles.org"
+  },
+  "exclude_repos": ["stats"],
+  "custom_repo_overrides": {}
+}
