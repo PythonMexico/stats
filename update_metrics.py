@@ -294,6 +294,11 @@ class GitHubTelemetryExtractor:
         prs = self._run_gh("pr", "list", "-R", full_repo, "--state", "all", "--json", "number") or []
         contribs = self._gh_api(f"repos/{full_repo}/contributors") or []
 
+        # GitHub Pages check
+        pages_data = self._gh_api(f"repos/{full_repo}/pages") or {}
+        has_pages = bool(pages_data.get("html_url"))
+        pages_url = pages_data.get("html_url") or info.get("homepageUrl") or ""
+
         valid_contribs = [c for c in contribs if isinstance(c, dict) and not self.is_bot(c.get("login"))]
         total_commits = sum(c.get("contributions", 0) for c in valid_contribs)
 
@@ -322,6 +327,8 @@ class GitHubTelemetryExtractor:
             "description": info.get("description") or "",
             "url": info.get("url", f"https://github.com/{full_repo}"),
             "homepageUrl": info.get("homepageUrl") or "",
+            "has_pages": has_pages,
+            "pages_url": pages_url,
             "created_at": (info.get("createdAt") or "2026-01-01")[:10],
             "stars": info.get("stargazerCount", 0),
             "forks": info.get("forkCount", 0),
