@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Huella Digital — shellaquiles.org</title>
+  <title>Huella Digital — «shellaquiles» by shellaquiles.org</title>
 
   <!-- OpenGraph / WhatsApp / Telegram / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="shellaquiles.org" />
-  <meta property="og:title" content="Huella Digital — shellaquiles.org" />
+  <meta property="og:title" content="Huella Digital — «shellaquiles» by shellaquiles.org" id="og-title" />
   <meta property="og:description" content="Dashboard web automático para visualizar la Huella Digital y métricas de proyectos en GitHub (stars, forks, commits, clones, visitas y colaboradores)." />
   <meta property="og:image" content="og-preview.png" />
   <meta property="og:image:type" content="image/png" />
@@ -17,7 +17,7 @@
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Huella Digital — shellaquiles.org" />
+  <meta name="twitter:title" content="Huella Digital — «shellaquiles» by shellaquiles.org" id="twitter-title" />
   <meta name="twitter:description" content="Dashboard web automático para visualizar la Huella Digital y métricas de proyectos en GitHub (stars, forks, commits, clones, visitas y colaboradores)." />
   <meta name="twitter:image" content="og-preview.png" />
 
@@ -586,6 +586,12 @@
     const handle  = meta.target || 'usuario';
 
     // ── Hydrate handles & Avatar ──────────────────────────────
+    document.title = `Huella Digital — «${handle}» by shellaquiles.org`;
+    const ogTitleEl = document.getElementById('og-title');
+    if (ogTitleEl) ogTitleEl.setAttribute('content', document.title);
+    const twTitleEl = document.getElementById('twitter-title');
+    if (twTitleEl) twTitleEl.setAttribute('content', document.title);
+
     document.getElementById('org-handle').textContent = '@' + handle;
     const tbh = document.getElementById('topbar-handle');
     if (tbh) tbh.textContent = handle;
