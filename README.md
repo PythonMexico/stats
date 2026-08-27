@@ -1,188 +1,121 @@
-<div align="center">
+# shellaquiles/stats
 
-# GitHub Telemetry & Stats Dashboard
-
+[![Demo en vivo](https://img.shields.io/badge/Demo_en_vivo-GitHub_Pages-22c55e.svg?style=flat-square&logo=github&logoColor=white)](https://shellaquiles.github.io/stats/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Chart.js](https://img.shields.io/badge/Chart.js-FF6384.svg?style=flat-square&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 [![Playwright](https://img.shields.io/badge/Playwright-2EAD33.svg?style=flat-square&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF.svg?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 
-<br />
+Dashboard web estático y automático para visualizar la **Huella Digital** y métricas de proyectos en GitHub (stars, forks, clones, commits, visitas y colaboradores). 
 
-> **Dashboard estático, reactivo y de alta fidelidad para monitorear huella digital, actividad, métricas de adopción y colaboradores de cualquier cuenta u organización de GitHub.**
->
-> *Desarrollado con el diseño e ingeniería del ecosistema open source de **[Shellaquiles](https://shellaquiles.org)**.*
+Impulsado por la comunidad de **[shellaquiles.org](https://shellaquiles.org)**.
 
-</div>
-
----
-
-## 🎯 ¿Qué es y para qué sirve?
-
-**GitHub Telemetry & Stats Dashboard** es el motor de **observabilidad y analítica open source** diseñado por **[Shellaquiles](https://shellaquiles.org)** para medir, visualizar y compartir la **Huella Digital** y el rendimiento técnico de cualquier usuario u organización en GitHub.
-
-A diferencia del perfil tradicional de GitHub, este sistema compila toda la actividad de tus proyectos fuente en un dashboard unificado bajo el **Swiss Minimalist System**:
-
-### 🔍 Secciones y Capacidades del Sistema
-
-- **Huella Digital (Org Hero & Radar de Ecosistema):** Muestra el balance acumulado de todos los repositorios públicos en un gráfico de radar multieje (`Chart.js`) y 4 KPIs globales: *Stars*, *Forks*, *Commits* y *Clones*.
-- **Stats Globales (Tabla Técnica Sortable):** Matriz interactiva de proyectos con ordenamiento de columnas en tiempo real por nombre, stack, fecha de creación (`Creado`), stars, forks, clones, visitas, commits, releases, pull requests y licencia.
-- **Por Repositorio (Catálogo de Proyectos):** Cuadrícula de tarjetas individuales por proyecto con métricas clave, etiquetas de lenguaje, versión de releases y enlaces directos a GitHub y Demo.
-- **Colaboradores y Core Team:** Cuadro de honor dinámico que mapea a la comunidad y equipo que contribuye con código, registrando commits totales y repositorios con actividad (excluyendo cuentas bots automáticamente).
-- **Captura Social Automática (OpenGraph):** Renderiza en cada sincronización una tarjeta social de alta fidelidad (`og-preview.png` en resolución Retina 2x de `2400 × 1260 px`) mediante Playwright headless, lista para Twitter/X y LinkedIn.
-- **Operación Zero-Config & Costo $0:** Se ejecuta de forma automatizada mediante **GitHub Actions** (cron diario) y se publica en **GitHub Pages** sin requerir servidores ni bases de datos.
+<p align="center">
+  <a href="https://shellaquiles.github.io/stats/">
+    <img src="https://img.shields.io/badge/🚀_VER_DEMO_EN_VIVO-shellaquiles.github.io%2Fstats-22c55e?style=for-the-badge&logo=githubpages&logoColor=white" alt="Ver Demo en Vivo" />
+  </a>
+</p>
 
 ---
 
-## ⚡ Guía Paso a Paso para Replicar (Zero-Config)
+## ¿Para qué sirve?
 
-No necesitas tocar una sola línea de código ni editar archivos de configuración. El sistema detecta automáticamente tu usuario de GitHub al hacer Fork.
+GitHub muestra tu actividad reciente, pero no te da una vista global del impacto de tus proyectos. Este dashboard genera una página web pública y ligera con:
 
-### 📌 Paso 1: Hacer Fork del Repositorio
-1. En la parte superior derecha de esta página, haz clic en el botón **Fork**.
-2. Selecciona tu cuenta personal o tu organización como destino.
-3. Haz clic en **Create fork**.
-
----
-
-### 📌 Paso 2: Habilitar GitHub Pages
-
-Para publicar tu dashboard en la web pública necesitas activar GitHub Pages. Puedes consultar la [documentación oficial de GitHub Pages](https://docs.github.com/es/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) para más detalles.
-
-1. En tu nuevo repositorio bifurcado, ve a la pestaña **Settings** (Configuración).
-2. En la barra lateral izquierda, selecciona la sección **Pages** (o accede directamente a `https://github.com/<TU-USUARIO>/stats/settings/pages`).
-3. En la sección **Build and deployment**:
-   - **Source:** Selecciona `Deploy from a branch`.
-   - **Branch:** Selecciona la rama **`gh-pages`** y la carpeta `/(root)`.
-4. Haz clic en el botón **Save** (Guardar).
-
-> [!NOTE]
-> - **Requisitos:** El repositorio debe ser **Público** (o contar con GitHub Pro/Team/Enterprise si es privado).
-> - Si la rama `gh-pages` aún no aparece en la lista desplegable, se creará de forma automática tras ejecutar la primera sincronización en el **Paso 3**; regresa a este menú a seleccionarla una vez terminado el workflow.
-> - **Permisos de Actions:** Asegúrate de que en **Settings** > **Actions** > **General** > *Workflow permissions* esté marcada la opción **"Read and write permissions"** (activa por defecto en GitHub).
+- **Huella Digital**: Radar multieje con el balance de Stars, Forks, Commits, Clones y Visitas.
+- **Stats Globales**: Tabla interactiva para ordenar tus repositorios por cualquier métrica o fecha de creación.
+- **Por Repositorio**: Tarjetas individuales con stack técnico y enlaces a código/demos.
+- **Colaboradores y Core Team**: Reconocimiento a quienes aportan código a tus repos (sin bots).
+- **Captura para Redes Sociales**: Genera en automático una tarjeta `og-preview.png` en alta resolución (2400x1260 px) para compartir en Twitter/X o LinkedIn.
+- **Zero-Config**: Filtra en automático tus repos públicos propios (`type=source`) y se actualiza solo cada 24 horas vía GitHub Actions sin costo de servidores.
 
 ---
 
-### 📌 Paso 3: Ejecutar la Sincronización Inicial
-1. En tu repositorio, haz clic en la pestaña **Actions**.
-2. Si los workflows están pausados por defecto al hacer fork, haz clic en el botón verde **"I understand my workflows, go ahead and enable them"**.
-3. En el menú de la izquierda, selecciona el workflow **`Auto-Sync Telemetry & Deploy to GitHub Pages`**.
-4. Haz clic en el botón **Run workflow** (a la derecha) y presiona el botón verde **Run workflow**.
+## Crea tu propio dashboard de estadísticas en 3 minutos
+
+Solo necesitas hacer un fork. El sistema detecta tu usuario en automático y publica tus métricas sin que tengas que tocar código:
+
+### 1. Haz Fork
+Haz clic en el botón **Fork** arriba a la derecha para copiar el repo a tu cuenta u organización.
+
+### 2. Activa GitHub Pages
+1. Ve a **Settings** > **Pages** en tu repo (o entra a `https://github.com/<TU_USUARIO>/stats/settings/pages`).
+2. En **Build and deployment** > **Source**, elige **Deploy from a branch**.
+3. En **Branch**, selecciona **`gh-pages`** y carpeta `/(root)`.
+4. Guarda los cambios.
+
+*(Nota: Si la rama `gh-pages` aún no aparece, se creará sola al terminar el paso 3. Para más detalles puedes ver la [documentación oficial de GitHub Pages](https://docs.github.com/es/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)).*
+
+### 3. Corre la sincronización inicial
+1. Ve a la pestaña **Actions** en tu repo.
+2. Si los workflows están pausados, presiona el botón verde para activarlos (*"I understand my workflows, go ahead and enable them"*).
+3. Selecciona **`Auto-Sync Telemetry & Deploy to GitHub Pages`** a la izquierda.
+4. Haz clic en **Run workflow** > **Run workflow** (ver [cómo ejecutar workflows manualmente](https://docs.github.com/es/actions/managing-workflow-runs/manually-running-a-workflow)).
+
+### 4. Consulta tus resultados en vivo
+
+Cuando el workflow termine de ejecutarse (tarda ~1 minuto):
+
+1. **Tu Dashboard público**: Estará publicado en:
+   ```text
+   https://<TU_USUARIO>.github.io/stats/
+   ```
+2. **Tu Tarjeta Social**: Se habrá generado la miniatura `og-preview.png` (2400x1260 px) para compartir en redes.
+3. **Historial de ejecuciones**: Puedes ver el estado de cada corrida en la pestaña **Actions** de tu repositorio.
+
+A partir de este momento, tus métricas se actualizarán en automático todos los días a las **06:00 UTC**.
 
 ---
 
-### 🎉 ¡Listo! Tu Dashboard está en Vivo
-Una vez que el workflow termine en GitHub Actions (~1 minuto):
-- Tu telemetría estará publicada automáticamente en:
-  ```text
-  https://<TU-USUARIO>.github.io/stats/
-  ```
-- **Actualizaciones Automáticas:** El pipeline de GitHub Actions se ejecutará **1 vez al día (06:00 UTC)** de forma desatendida para mantener tus métricas siempre al día.
-- **Vista Previa Social Automática:** Se generará una imagen de previsualización Retina 2x (`og-preview.png`) lista para compartir en Twitter/X, LinkedIn y Discord.
+## Desarrollo local
 
----
-
-## 💻 Desarrollo y Pruebas Locales (Opcional)
-
-Si deseas probar o personalizar el dashboard en tu computadora local:
+Si quieres probarlo en tu máquina:
 
 ```bash
-# 1. Clonar tu repositorio bifurcado
-git clone https://github.com/<TU-USUARIO>/stats.git
+# 1. Clonar
+git clone https://github.com/<TU_USUARIO>/stats.git
 cd stats
 
-# 2. Iniciar extractor y servidor local (levanta http://localhost:8000)
+# 2. Correr servidor local (http://localhost:8000)
 make dev
 
-# 3. Generar la tarjeta para redes sociales en alta resolución
+# 3. Generar la captura para redes
 make preview
 ```
 
-> [!TIP]
-> **Personalización avanzada opcional**: Si en algún momento deseas auditar una organización o usuario diferente al dueño del repositorio, puedes crear un archivo `config.json` con `{"target": "otro-usuario"}`. Si el archivo no existe o está vacío, el sistema siempre auditará al dueño del repositorio de forma automática.
-
 ---
 
-## 🏗️ Arquitectura de Datos y Flujo de Trabajo
+## Arquitectura
 
 ```mermaid
-flowchart TD
-    subgraph Detección Automática
-        FORK["Fork en GitHub"] --> GHA["GitHub Actions Runner"]
-        GHA -->|Inyecta GITHUB_REPOSITORY_OWNER| EXT["update_metrics.py"]
-    end
-
-    subgraph Extractor Autónomo
-        API["GitHub CLI / API"] --> EXT
-        EXT -->|Auto-detecta Org vs User| EXT
-        EXT -->|Filtra solo repos propios --source| EXT
-        EXT -->|Calcula antigüedad y métricas| DATA["data.json"]
-    end
-
-    subgraph Tarjeta Social
-        DATA --> PREV["generate_preview.py (Playwright)"]
-        PREV --> CARD["og-preview.png (2400x1260 px)"]
-    end
-
-    subgraph Frontend Reactivo
-        DATA -.->|Fetch Asíncrono| UI["index.html (Swiss Minimalist)"]
-        UI --> RADAR["Radar Chart.js"]
-        UI --> TABLE["Tabla Sortable Interactiva"]
-    end
-
-    subgraph Despliegue
-        DATA --> DEPLOY["peaceiris/actions-gh-pages"]
-        CARD --> DEPLOY
-        UI --> DEPLOY
-        DEPLOY -->|force_orphan: true| GHP["Rama gh-pages"]
-        GHP --> LIVE["https://usuario.github.io/stats/"]
-    end
+flowchart LR
+    GH[GitHub API] --> PY[update_metrics.py]
+    PY --> DATA[data.json]
+    DATA --> HTML[index.html]
+    DATA --> SHOT[generate_preview.py]
+    SHOT --> IMG[og-preview.png]
+    HTML --> GHP[gh-pages]
+    IMG --> GHP
 ```
 
----
-
-## 📁 Estructura del Directorio
-
-```text
-├── .github/
-│   └── workflows/
-│       └── sync_metrics.yml   # Workflow CI/CD y despliegue a gh-pages
-├── config.json                # Configuración opcional (Zero-Config por defecto)
-├── update_metrics.py          # Extractor puro y auto-resolución de usuario
-├── generate_preview.py        # Motor de renderizado OpenGraph con Playwright
-├── share.html                 # Plantilla base para exportación de preview social
-├── index.html                 # Interfaz visual reactiva suiza (Full-width, sortable)
-├── og-preview.png             # Vista previa generada para redes sociales (2400x1260 px)
-├── Makefile                   # Comandos rápidos de desarrollo y automatización
-├── VERSION                    # Single source of truth de versión (SemVer)
-├── CHANGELOG.md               # Registro histórico de versiones
-└── README.md                  # Documentación técnica y guía paso a paso
-```
+- **Extractor**: Python puro con GitHub CLI (`gh`). Filtra forks (`--source`), auto-detecta usuario/org y calcula antigüedad.
+- **Frontend**: HTML5, Vanilla CSS y Vanilla JS. Sin frameworks pesados. Gráficos con Chart.js e iconos Lucide.
+- **Captura Social**: Playwright headless renderizando `share.html` a escala 2x Retina.
+- **Despliegue**: GitHub Actions publicando a rama huérfana `gh-pages`.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Sobre Shellaquiles
 
-- **Frontend**: HTML5 Semántico, Vanilla CSS (Swiss Minimalist Design System), JavaScript Moderno asíncrono.
-- **Gráficos & Componentes**: Chart.js (Radar de Ecosistema multieje) y Lucide Icons.
-- **Backend / Extractor**: Python 3.10+ (`dataclasses`, `pathlib`, `logging`, `subprocess`).
-- **Renderizado Social**: Playwright / Headless Chromium para exportación Retina 2x de `og-preview.png`.
-- **Infraestructura**: GitHub CLI, GitHub Actions y GitHub Pages (rama aislada `gh-pages`).
+Este proyecto es parte de las herramientas de código abierto desarrolladas por la comunidad de **[shellaquiles.org](https://shellaquiles.org)**. Si te gusta el desarrollo de herramientas de terminal, CLI y utilidades para devs, únete a la comunidad:
 
----
-
-## 🐢 Impulsado por Shellaquiles
-
-Este dashboard es parte del ecosistema de herramientas abiertas de **[Shellaquiles](https://shellaquiles.org)** — una comunidad e iniciativa dedicada a crear utilidades de terminal, motores de automatización, analítica de datos y herramientas de desarrollo para la comunidad open source.
-
-¿Te apasiona el software libre, la automatización y crear herramientas útiles para desarrolladores?
-- 🌐 **Sitio Oficial:** [shellaquiles.org](https://shellaquiles.org)
-- 🐙 **GitHub:** [github.com/shellaquiles](https://github.com/shellaquiles)
-- 🤝 **¡Súmate a la comunidad!** Explora nuestros proyectos (`cron-quiles`, `pandocquiles`, `tribuTACOS`, `KARNITAS`, `stats`) y colabora en el ecosistema.
+- Web: [https://shellaquiles.org](https://shellaquiles.org)
+- GitHub: [https://github.com/shellaquiles](https://github.com/shellaquiles)
+- Otros proyectos: `cron-quiles`, `tribuTACOS`, `pandocquiles`, `KARNITAS`.
 
 ---
 
-## 📜 Licencia
+## Licencia
 
-Distribuido bajo la licencia **MIT**. Desarrollado e impulsado por **Shellaquiles**. Consulta el archivo `LICENSE` para más información.
+MIT © Shellaquiles.
