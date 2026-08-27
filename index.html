@@ -241,7 +241,11 @@
     .stats-table th {
       padding: 0.65rem 0.85rem; font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.06em; color: var(--zinc-500); white-space: nowrap;
+      user-select: none;
     }
+    .stats-table th.sortable { cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+    .stats-table th.sortable:hover { background: var(--zinc-100); color: var(--ink); }
+    .stats-table th.sort-active { color: var(--navy); background: #f0f4ff; }
     .stats-table th.num, .stats-table td.num { text-align: right; }
     .stats-table td {
       padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--zinc-200); color: var(--ink); white-space: nowrap;
@@ -352,8 +356,8 @@
     </a>
 
     <nav class="topbar-nav">
-      <a href="#catalogo">Proyectos</a>
-      <a href="#matriz">Stats Globales</a>
+      <a href="#stats">Stats Globales</a>
+      <a href="#proyectos">Proyectos</a>
       <a href="#colaboradores">Colaboradores</a>
     </nav>
   </header>
@@ -385,37 +389,29 @@
     </div>
   </section>
 
-  <!-- SECTION HEADER: POR REPOSITORIO -->
-  <div class="section-header" id="section-repos" style="display:none;">
-    <h2 id="proyectos">Por Repositorio</h2>
-    <div class="section-header-line"></div>
-  </div>
-
-  <!-- REPO GRID -->
-  <main class="radar-grid" id="radar-grid" style="display:none;"></main>
-
   <!-- SECTION HEADER: STATS GLOBALES -->
-  <div class="section-header" id="section-stats" style="display:none;margin-top:3.5rem;">
-    <h2 id="stats">Stats Globales</h2>
+  <div class="section-header" id="section-stats" style="display:none;margin-top:2.5rem;">
+    <h2 id="stats">Stats Globales <span id="stats-handle" style="color:var(--navy);font-weight:700;margin-left:0.25rem;"></span></h2>
     <div class="section-header-line"></div>
   </div>
 
   <!-- TABLE SECTION -->
   <section class="table-section" id="table-section" style="display:none;margin-top:1.5rem;">
     <div class="table-wrap">
-      <table class="stats-table">
+      <table class="stats-table" id="main-stats-table">
         <thead>
           <tr>
-            <th><i data-lucide="folder-git-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Proyecto</th>
-            <th><i data-lucide="code-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Stack</th>
-            <th class="num"><i data-lucide="star" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#b45309;"></i> Stars</th>
-            <th class="num"><i data-lucide="git-fork" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#1e3a8a;"></i> Forks</th>
-            <th class="num"><i data-lucide="download" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#0891b2;"></i> Clones</th>
-            <th class="num"><i data-lucide="eye" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#db2777;"></i> Visitas</th>
-            <th class="num"><i data-lucide="git-commit" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> Commits</th>
-            <th class="num"><i data-lucide="tag" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Releases</th>
-            <th class="num"><i data-lucide="git-pull-request" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> PRs</th>
-            <th><i data-lucide="scale" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Licencia</th>
+            <th class="sortable" data-sort="name"><i data-lucide="folder-git-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Proyecto <span class="sort-icon"></span></th>
+            <th class="sortable" data-sort="language"><i data-lucide="code-2" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Stack <span class="sort-icon"></span></th>
+            <th class="sortable" data-sort="created_at"><i data-lucide="calendar" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Creado <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="stars"><i data-lucide="star" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#b45309;"></i> Stars <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="forks"><i data-lucide="git-fork" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#1e3a8a;"></i> Forks <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="clones_14d"><i data-lucide="download" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#0891b2;"></i> Clones <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="views_14d"><i data-lucide="eye" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#db2777;"></i> Visitas <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="commits"><i data-lucide="git-commit" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> Commits <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="releases"><i data-lucide="tag" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Releases <span class="sort-icon"></span></th>
+            <th class="num sortable" data-sort="prs"><i data-lucide="git-pull-request" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;color:#046a38;"></i> PRs <span class="sort-icon"></span></th>
+            <th class="sortable" data-sort="license"><i data-lucide="scale" style="width:11px;height:11px;vertical-align:middle;margin-right:3px;"></i> Licencia <span class="sort-icon"></span></th>
           </tr>
         </thead>
         <tbody id="table-body">
@@ -425,9 +421,18 @@
     </div>
   </section>
 
+  <!-- SECTION HEADER: POR REPOSITORIO -->
+  <div class="section-header" id="section-repos" style="display:none;margin-top:3.5rem;">
+    <h2 id="proyectos">Por Repositorio</h2>
+    <div class="section-header-line"></div>
+  </div>
+
+  <!-- REPO GRID -->
+  <main class="radar-grid" id="radar-grid" style="display:none;"></main>
+
   <!-- SECTION HEADER: COLABORADORES Y CORE TEAM -->
   <div class="section-header" id="section-contrib" style="display:none;margin-top:3.5rem;">
-    <h2 id="colaboradores">Colaboradores y Core Team</h2>
+    <h2 id="colaboradores">Colaboradores y Core Team <span id="contrib-handle" style="color:var(--navy);font-weight:700;margin-left:0.25rem;"></span></h2>
     <div class="section-header-line"></div>
   </div>
 
@@ -571,6 +576,10 @@
     if (centerUserEl) centerUserEl.textContent = '@' + handle;
     const centerLinkEl = document.getElementById('topbar-center-link');
     if (centerLinkEl && meta.links?.github) centerLinkEl.href = meta.links.github;
+    const statsHandleEl = document.getElementById('stats-handle');
+    if (statsHandleEl) statsHandleEl.textContent = '@' + handle;
+    const contribHandleEl = document.getElementById('contrib-handle');
+    if (contribHandleEl) contribHandleEl.textContent = '@' + handle;
 
     // Avatar
     const avatarWrap = document.getElementById('org-avatar-wrap');
@@ -741,47 +750,106 @@
       grid.appendChild(card);
     });
 
-    // ── STATS GLOBALES TABLE ───────────────────────────────────
+    // ── STATS GLOBALES TABLE (SORTABLE) ───────────────────────
     document.getElementById('section-stats').style.display = 'flex';
     document.getElementById('table-section').style.display = 'block';
 
     const tableBody = document.getElementById('table-body');
-    const tableRows = repos.map(r => `
-      <tr>
-        <td>
-          <a class="table-repo-link" href="${r.url}" target="_blank" rel="noopener">
-            <i data-lucide="${r.icon || 'box'}" style="width:13px;height:13px;color:#1e3a8a;"></i>
-            <strong>${r.name}</strong>
-          </a>
-        </td>
-        <td><span class="table-tag">${r.language || '—'}</span></td>
-        <td class="num" style="font-weight:700;">${(r.stars || 0).toLocaleString()}</td>
-        <td class="num">${(r.forks || 0).toLocaleString()}</td>
-        <td class="num">${(r.clones_14d || 0).toLocaleString()}</td>
-        <td class="num">${(r.views_14d || 0).toLocaleString()}</td>
-        <td class="num">${(r.commits || 0).toLocaleString()}</td>
-        <td class="num">${r.releases > 0 ? r.releases + 'v' : '—'}</td>
-        <td class="num">${r.prs || 0}</td>
-        <td><span class="table-tag">${r.license && r.license !== 'None' ? r.license : 'MIT'}</span></td>
-      </tr>
-    `).join('');
+    let currentSort = { key: 'stars', order: 'desc' };
 
-    const totalsRow = `
-      <tr class="table-totals-row">
-        <td><strong>TOTAL (${repos.length} PROYECTOS)</strong></td>
-        <td><span class="table-tag">ECOSISTEMA</span></td>
-        <td class="num">${(totals.stars || 0).toLocaleString()}</td>
-        <td class="num">${(totals.forks || 0).toLocaleString()}</td>
-        <td class="num">${(totals.clones_14d || 0).toLocaleString()}</td>
-        <td class="num">${(totals.views_14d || repos.reduce((s,r) => s + (r.views_14d||0),0)).toLocaleString()}</td>
-        <td class="num">${(totals.commits || 0).toLocaleString()}</td>
-        <td class="num">${totalReleases}v</td>
-        <td class="num">${totalPRs}</td>
-        <td>—</td>
-      </tr>
-    `;
+    function renderTableRows() {
+      const sorted = [...repos].sort((a, b) => {
+        let valA = a[currentSort.key];
+        let valB = b[currentSort.key];
 
-    tableBody.innerHTML = tableRows + totalsRow;
+        if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+          return currentSort.order === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+
+        valA = valA || 0;
+        valB = valB || 0;
+        return currentSort.order === 'asc' ? valA - valB : valB - valA;
+      });
+
+      const tableRows = sorted.map(r => `
+        <tr>
+          <td>
+            <a class="table-repo-link" href="${r.url}" target="_blank" rel="noopener">
+              <i data-lucide="${r.icon || 'box'}" style="width:13px;height:13px;color:#1e3a8a;"></i>
+              <strong>${r.name}</strong>
+            </a>
+          </td>
+          <td><span class="table-tag">${r.language || '—'}</span></td>
+          <td style="color:var(--zinc-500);font-size:0.68rem;white-space:nowrap;">${r.created_at || '—'}</td>
+          <td class="num" style="font-weight:700;">${(r.stars || 0).toLocaleString()}</td>
+          <td class="num">${(r.forks || 0).toLocaleString()}</td>
+          <td class="num">${(r.clones_14d || 0).toLocaleString()}</td>
+          <td class="num">${(r.views_14d || 0).toLocaleString()}</td>
+          <td class="num">${(r.commits || 0).toLocaleString()}</td>
+          <td class="num">${r.releases > 0 ? r.releases + 'v' : '—'}</td>
+          <td class="num">${r.prs || 0}</td>
+          <td><span class="table-tag">${r.license && r.license !== 'None' ? r.license : 'MIT'}</span></td>
+        </tr>
+      `).join('');
+
+      const totalsRow = `
+        <tr class="table-totals-row">
+          <td><strong>TOTAL (${repos.length} PROYECTOS)</strong></td>
+          <td><span class="table-tag">ECOSISTEMA</span></td>
+          <td>—</td>
+          <td class="num">${(totals.stars || 0).toLocaleString()}</td>
+          <td class="num">${(totals.forks || 0).toLocaleString()}</td>
+          <td class="num">${(totals.clones_14d || 0).toLocaleString()}</td>
+          <td class="num">${(totals.views_14d || repos.reduce((s,r) => s + (r.views_14d||0),0)).toLocaleString()}</td>
+          <td class="num">${(totals.commits || 0).toLocaleString()}</td>
+          <td class="num">${totalReleases}v</td>
+          <td class="num">${totalPRs}</td>
+          <td>—</td>
+        </tr>
+      `;
+
+      tableBody.innerHTML = tableRows + totalsRow;
+      lucide.createIcons();
+    }
+
+    // Attach click listeners to headers
+    document.querySelectorAll('#main-stats-table th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort;
+        if (currentSort.key === key) {
+          currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort.key = key;
+          currentSort.order = (key === 'name' || key === 'language' || key === 'license') ? 'asc' : 'desc';
+        }
+
+        // Update header classes and indicator
+        document.querySelectorAll('#main-stats-table th.sortable').forEach(h => {
+          h.classList.remove('sort-active');
+          const iconSpan = h.querySelector('.sort-icon');
+          if (iconSpan) iconSpan.textContent = '';
+        });
+
+        th.classList.add('sort-active');
+        const activeIconSpan = th.querySelector('.sort-icon');
+        if (activeIconSpan) {
+          activeIconSpan.textContent = currentSort.order === 'asc' ? ' ▲' : ' ▼';
+        }
+
+        renderTableRows();
+      });
+    });
+
+    // Default initial sort: Stars DESC
+    const defaultTh = document.querySelector('#main-stats-table th[data-sort="stars"]');
+    if (defaultTh) {
+      defaultTh.classList.add('sort-active');
+      const defSpan = defaultTh.querySelector('.sort-icon');
+      if (defSpan) defSpan.textContent = ' ▼';
+    }
+    renderTableRows();
 
     // ── CONTRIBUTORS GRID ─────────────────────────────────────
     const contributors = payload.contributors || [];

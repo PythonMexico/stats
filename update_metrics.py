@@ -117,11 +117,18 @@ class ExtractorConfig:
                 logger.warning("Could not open config file '%s': %s", file_path, exc)
 
         target = os.getenv("STATS_TARGET") or file_data.get("target", "shellaquiles")
-        is_org = (
-            os.getenv("STATS_IS_ORG", "").lower() in ("true", "1")
-            if "STATS_IS_ORG" in os.environ
-            else file_data.get("is_org", True)
-        )
+        
+        # Auto-detección de is_org desde la API si no viene forzado
+        if "STATS_IS_ORG" in os.environ:
+            is_org = os.getenv("STATS_IS_ORG", "").lower() in ("true", "1")
+        elif "is_org" in file_data:
+            is_org = bool(file_data["is_org"])
+        else:
+            try:
+                user_info = cls._run_gh("api", f"users/{target}")
+                is_org = bool(user_info and user_info.get("type") == "Organization")
+            except Exception:
+                is_org = False
         title = os.getenv("STATS_TITLE") or file_data.get(
             "title", f"stats.{target} — Telemetría Open Source"
         )
@@ -139,7 +146,7 @@ class ExtractorConfig:
         links_data = file_data.get("links", {})
         links = {
             "github": os.getenv("STATS_GITHUB_URL") or links_data.get("github", f"https://github.com/{target}"),
-            "website": os.getenv("STATS_WEBSITE_URL") or links_data.get("website", f"https://{target}.org"),
+            "website": os.getenv("STATS_WEBSITE_URL") or links_data.get("website", f"https://shellaquiles.org"),
         }
 
         env_exclude = os.getenv("STATS_EXCLUDE_REPOS")
@@ -232,12 +239,13 @@ class GitHubTelemetryExtractor:
         return not login or login in DEFAULT_BOT_ACCOUNTS or login.endswith("[bot]")
 
     def discover_repositories(self) -> list[str]:
-        """Query target for all active, non-archived public repositories."""
-        logger.info("Discovering public repositories for '%s'...", self.config.target)
+        """Query target for all active, non-archived public source repositories."""
+        logger.info("Discovering public source repositories for '%s'...", self.config.target)
         payload = self._run_gh(
             "repo",
             "list",
             self.config.target,
+            "--source",
             "--json",
             "name,isArchived,isFork,isPrivate",
             "--limit",
@@ -252,9 +260,10 @@ class GitHubTelemetryExtractor:
             for repo in payload
             if not repo.get("isArchived")
             and not repo.get("isPrivate")
+            and not repo.get("isFork")
             and repo.get("name") not in self.config.exclude_repos
         ]
-        logger.info("Discovered %d active repositories: %s", len(discovered), ", ".join(discovered))
+        logger.info("Discovered %d active source repositories: %s", len(discovered), ", ".join(discovered))
         return discovered
 
     def _resolve_visuals(self, repo_name: str, language: str) -> tuple[Optional[str], bool, str, str]:

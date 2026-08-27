@@ -12,9 +12,13 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
+httpd_server = None
+
 def run_server():
+    global httpd_server
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), QuietHandler) as httpd:
+        httpd_server = httpd
         httpd.serve_forever()
 
 async def generate_screenshot():
@@ -54,6 +58,9 @@ async def generate_screenshot():
             print("[ERROR] No se encontró el selector #shareCard")
 
         await browser.close()
+
+    if httpd_server:
+        httpd_server.shutdown()
 
 if __name__ == "__main__":
     asyncio.run(generate_screenshot())
