@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="shellaquiles.org" />
   <meta property="og:title" content="Huella Digital GitHub @shellaquiles" id="og-title" />
-  <meta property="og:description" content="Dashboard web automático para visualizar la Huella Digital y métricas de proyectos en GitHub (stars, forks, commits, clones, visitas y colaboradores)." />
+  <meta property="og:description" content="Telemetría en tiempo real: estrellas, forks, commits, clones y colaboradores. Crea gratis el dashboard de tu cuenta u organización con un fork en GitHub." id="og-desc" />
   <meta property="og:image" content="og-preview.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
@@ -18,7 +18,7 @@
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Huella Digital GitHub @shellaquiles" id="twitter-title" />
-  <meta name="twitter:description" content="Dashboard web automático para visualizar la Huella Digital y métricas de proyectos en GitHub (stars, forks, commits, clones, visitas y colaboradores)." />
+  <meta name="twitter:description" content="Telemetría en tiempo real: estrellas, forks, commits, clones y colaboradores. Crea gratis el dashboard de tu cuenta u organización con un fork en GitHub." id="twitter-desc" />
   <meta name="twitter:image" content="og-preview.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -587,10 +587,15 @@
 
     // ── Hydrate handles & Avatar ──────────────────────────────
     document.title = `Huella Digital GitHub @${handle}`;
+    const descText = `Telemetría de @${handle} en tiempo real: estrellas, forks, commits, clones y colaboradores. Crea gratis el dashboard de tu cuenta u organización con un fork en GitHub.`;
     const ogTitleEl = document.getElementById('og-title');
     if (ogTitleEl) ogTitleEl.setAttribute('content', document.title);
+    const ogDescEl = document.getElementById('og-desc');
+    if (ogDescEl) ogDescEl.setAttribute('content', descText);
     const twTitleEl = document.getElementById('twitter-title');
     if (twTitleEl) twTitleEl.setAttribute('content', document.title);
+    const twDescEl = document.getElementById('twitter-desc');
+    if (twDescEl) twDescEl.setAttribute('content', descText);
 
     document.getElementById('org-handle').textContent = '@' + handle;
     const tbh = document.getElementById('topbar-handle');
