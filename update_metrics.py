@@ -116,7 +116,34 @@ class ExtractorConfig:
             except OSError as exc:
                 logger.warning("Could not open config file '%s': %s", file_path, exc)
 
-        target = os.getenv("STATS_TARGET") or file_data.get("target", "shellaquiles")
+        # 1. Target resolution: Env var -> config.json -> GITHUB_REPOSITORY_OWNER -> gh cli / git remote
+        target = os.getenv("STATS_TARGET") or file_data.get("target")
+        if not target or target == "USER" or target == "TU_USUARIO":
+            # GitHub Actions runner provee GITHUB_REPOSITORY_OWNER automáticamente
+            target = os.getenv("GITHUB_REPOSITORY_OWNER")
+            
+        if not target:
+            # En entorno local, intentar obtener el usuario autenticado en gh
+            try:
+                auth_user = cls._run_gh("api", "user")
+                if auth_user and auth_user.get("login"):
+                    target = auth_user["login"]
+            except Exception:
+                pass
+
+        if not target:
+            # Fallback a origin remote de git
+            try:
+                git_remote = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], text=True).strip()
+                if "github.com" in git_remote:
+                    # git@github.com:owner/repo.git or https://github.com/owner/repo.git
+                    clean_path = git_remote.split("github.com")[-1].lstrip("/:").removesuffix(".git")
+                    target = clean_path.split("/")[0]
+            except Exception:
+                pass
+
+        target = target or "shellaquiles"
+        logger.info("Resolved target profile/org: '%s'", target)
         
         # Auto-detección de is_org desde la API si no viene forzado
         if "STATS_IS_ORG" in os.environ:
