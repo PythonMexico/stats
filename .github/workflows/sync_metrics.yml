@@ -2,8 +2,8 @@ name: Auto-Sync Telemetry & Deploy to GitHub Pages
 
 on:
   schedule:
-    # Corre todos los días a las 06:00 y 18:00 UTC (2 veces al día)
-    - cron: '0 6,18 * * *'
+    # Corre todos los días a las 06:00 UTC (1 vez al día)
+    - cron: '0 6 * * *'
   workflow_dispatch: # Permite ejecución manual con un click desde GitHub Actions
   push:
     branches:

@@ -1,53 +1,58 @@
-# Contexto Arquitectónico y del Ecosistema
+# Arquitectura del Motor de Telemetría (GitHub Stats Engine)
 
-Guía de arquitectura, diseño y convenciones técnicas para el motor **`shellaquiles/stats`**.
-
----
-
-## 1. Propósito y Modelo de Distribución
-`stats` es un motor de observabilidad, telemetría y analíticas de tráfico para organizaciones y usuarios de GitHub.
-Diseñado para ser **100% replicable y forkeable** mediante configuración declarativa (`config.json`), desacoplando por completo el backend extractor del frontend.
+Motor genérico y desacoplado para observabilidad, análisis de adopción y cuadro de colaboradores de perfiles u organizaciones en GitHub.
 
 ---
 
-## 2. Componentes del Sistema
+## 1. Principios de Arquitectura
 
-- **`update_metrics.py` (Extractor Backend / SRP)**:
-  - Consulta GitHub CLI (`gh api` y `gh repo view`).
-  - Autodescubre repositorios públicos activos sin configuración manual.
-  - Normaliza canales de tráfico y fuentes de llegada (*referrers*).
-  - Filtra bots y automatizaciones (`dependabot`, `github-actions`, etc.).
-  - Computa la antigüedad del ecosistema automáticamente (`active_since`).
-  - Exporta el dataset estructurado a `data.json`.
+1. **Extractor Puro e Idiomático (`update_metrics.py`)**:
+   - Consulta GitHub API mediante `gh` CLI.
+   - Autodescubre repositorios públicos en tiempo de ejecución.
+   - Normaliza fuentes de tráfico y consolida métricas acumuladas.
+   - Filtra cuentas automatizadas y bots (`[bot]`, `actions-user`, `dependabot`).
+   - Computa dinámicamente la antigüedad del ecosistema (`active_since`).
+   - Exporta exclusivamente el dataset estructurado a `data.json`.
 
-- **`index.html` (Frontend Reactivo / Swiss Minimalist System)**:
-  - Single Page Application estática construida bajo el **Swiss Minimalist System**.
-  - Tipografía `Inter` + `JetBrains Mono`, bordes de 1px (`border-zinc-300`) y cero degradados.
-  - Consume `data.json` asíncronamente mediante `fetch()`.
-  - Iconografía vectorial con **Lucide Icons** y gráficos con **Chart.js**.
-  - Incluye crédito institucional permanente a **Shellaquiles** en el footer.
+2. **Frontend Reactivo Desacoplado (`index.html`)**:
+   - Single Page Application estática gobernada por el **Swiss Minimalist System**.
+   - Se hidrata en tiempo real mediante `fetch('data.json')`.
+   - Cero dependencias de datos fijos o proyectos hardcodeados.
+   - Gráficos nativos con Chart.js e iconografía vectorial Lucide Icons.
+   - Atribución de origen permanente a Shellaquiles en el footer.
 
-- **`config.json` / `.env` (Capa de Configuración)**:
-  - Define usuario/organización objetivo, títulos, branding y exclusiones de repositorios.
+3. **Capa de Configuración Declarativa (`config.json` / `.env`)**:
+   - Parámetros del perfil u organización objetivo (`target`, `is_org`, títulos, branding y exclusiones).
 
-- **`.github/workflows/sync_metrics.yml` (CI/CD)**:
-  - Tarea programada (cron 2 veces al día) y manual (`workflow_dispatch`).
-  - Publica `index.html` + `data.json` a la rama aislada **`gh-pages`** con `force_orphan: true`.
-  - **Zero-Commit Git Pollution**: Las ramas `main` y `dev` se mantienen libres de commits automáticos.
+4. **Pipeline CI/CD en Rama Huérfana (`.github/workflows/sync_metrics.yml`)**:
+   - Automatización con cron 1 vez al día (06:00 UTC) y ejecución manual (`workflow_dispatch`).
+   - Despliegue directo a la rama aislada `gh-pages` (`force_orphan: true`).
+   - Preserva `main` y `dev` con cero commits de bots.
 
-- **`Makefile`**:
-  - `make dev`: Extrae datos y levanta servidor HTTP local en `http://localhost:8000`.
-  - `make sync`: Ejecuta únicamente la extracción de datos.
-  - `make clean`: Limpia artefactos temporales y cachés locales.
+5. **Versionado Centralizado (`VERSION` y `CHANGELOG.md`)**:
+   - `VERSION` actúa como *Single Source of Truth* del release.
+   - El extractor inyecta la versión en `data.json` y el frontend la renderiza automáticamente.
+   - Todo cambio notable se registra en `CHANGELOG.md` siguiendo Semantic Versioning.
+
+---
+
+## 2. Convenciones de Estilo Visual (Swiss Minimalist System)
+
+- **Colores Sólidos Institucionales**: Azul `#1e3a8a`, Verde `#046a38`, Ámbar `#b45309`, Zinc `#09090b` / `#f8fafc`.
+- **Estructura Rígida**: Rejillas de 1px con `border-zinc-300` o `border-zinc-200`.
+- **Tipografía Dual**: `Inter` para copies/textos y `JetBrains Mono` para datos técnicos y métricas.
+- **Sin Degradados**: Fondos planos y contraste sobrio de ingeniería.
 
 ---
 
 ## 3. Flujo de Trabajo Local
 
 ```bash
-# 1. Desarrollo con un solo comando:
+# Iniciar extractor y servidor local en http://localhost:8000
 make dev
 
-# 2. Servidor activo en:
-# http://localhost:8000
+# O por separado:
+make sync   # Solo extracción de datos
+make serve  # Solo servidor HTTP
+make clean  # Limpieza de temporales
 ```

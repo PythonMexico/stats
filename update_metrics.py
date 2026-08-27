@@ -415,8 +415,12 @@ class GitHubTelemetryExtractor:
         if not os.getenv("STATS_TAGLINE"):
             brand_dict["tagline"] = auto_tagline
 
+        version_file = Path("VERSION")
+        engine_version = version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else "1.0.0"
+
         payload = {
             "meta": {
+                "version": engine_version,
                 "target": self.config.target,
                 "is_org": self.config.is_org,
                 "title": self.config.title,

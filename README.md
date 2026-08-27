@@ -1,25 +1,25 @@
+<div align="center">
+
 # GitHub Telemetry & Stats Dashboard
 
-> Sistema minimalista de telemetría, observabilidad y analíticas de tráfico para perfiles y organizaciones de GitHub.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Chart.js](https://img.shields.io/badge/Chart.js-FF6384.svg?style=flat-square&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF.svg?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 
----
+<br />
 
-## Características Técnicas
+> **Dashboard estático y reactivo para monitorear telemetría, tráfico y colaboradores de cualquier cuenta u organización de GitHub.**
 
-| Módulo | Especificación |
-| :--- | :--- |
-| **Swiss Minimalist System** | Tipografía dual (`Inter` para copies, `JetBrains Mono` para métricas), rejillas de 1px y colores institucionales sólidos. |
-| **Autodescubrimiento Dinámico** | Extracción desatendida vía GitHub CLI (`gh`): detecta automáticamente nuevos repositorios públicos sin registrarlos manualmente. |
-| **Filtro de Cuentas Automatizadas** | Excluye cuentas de servicio y bots (`dependabot`, `github-actions`, `[bot]`) para computar únicamente colaboradores humanos. |
-| **Normalización de Fuentes de Tráfico** | Consolida dominios web y aplicaciones móviles (*referrers*: LinkedIn, Telegram, Google Search) con umbral cualitativo. |
-| **Despliegue Aislado (Orphan Branch)** | Publicación automática en la rama `gh-pages` vía GitHub Actions sin contaminar el historial de commits de las ramas principales. |
+</div>
 
 ---
 
 ## Guía de Replicación
 
 ### 1. Crear Fork del Repositorio
-Hacer click en el botón **Fork** en la cabecera del repositorio para generar una copia en tu cuenta.
+Hacer click en el botón **Fork** en la cabecera de esta página para generar tu propia copia en GitHub.
 
 ---
 
@@ -36,8 +36,7 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
     "middle": "perfil",
     "suffix": ".dev",
     "prefix_color": "#22c55e",
-    "suffix_color": "#f43f5e",
-    "tagline": "TELEMETRÍA EN VIVO"
+    "suffix_color": "#f43f5e"
   },
   "links": {
     "github": "https://github.com/TU_USUARIO",
@@ -47,8 +46,8 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 }
 ```
 
-> [!NOTE]
-> Los parámetros también pueden definirse mediante variables de entorno en GitHub Actions Secrets/Variables: `STATS_TARGET`, `STATS_IS_ORG`, `STATS_TITLE`, etc. Ver [`.env.example`](file:///.env.example).
+> [!TIP]
+> **Configuración mediante Variables de Entorno**: También puedes definir los parámetros sin tocar archivos mediante las *Secrets / Variables* de GitHub Actions: `STATS_TARGET`, `STATS_IS_ORG`, etc. Ver [`.env.example`](file:///.env.example).
 
 ---
 
@@ -58,6 +57,9 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 3. En **Branch**, seleccionar la rama **`gh-pages`** y directorio `/(root)`.
 4. Guardar los cambios.
 
+> [!NOTE]
+> Si la rama `gh-pages` aún no aparece en la lista desplegable, se creará automáticamente tras ejecutar la primera sincronización (Paso 4).
+
 ---
 
 ### 4. Ejecutar la Sincronización
@@ -66,17 +68,17 @@ Actualizar [`config.json`](file:///config.json) con los parámetros del usuario 
 1. Ir a la pestaña **Actions** en el repositorio.
 2. Seleccionar el workflow **`Auto-Sync Telemetry & Deploy to GitHub Pages`**.
 3. Hacer click en **Run workflow**.
-4. El pipeline ejecutará la extracción de datos, compilará `data.json` y desplegará a `gh-pages`. El cron continuará ejecutándose automáticamente dos veces al día.
+4. El pipeline extraerá los datos, compilará `data.json` y desplegará a `gh-pages`. El cron continuará ejecutándose automáticamente **1 vez al día (06:00 UTC)**.
 
 #### Localmente
 ```bash
 # 1. Autenticación en GitHub CLI (solo una vez)
 gh auth login
 
-# 2. Opción rápida con Makefile (extrae datos y levanta servidor en http://localhost:8000)
+# 2. Desarrollo con Makefile (extrae telemetría y levanta http://localhost:8000)
 make dev
 
-# O ejecutando los comandos manualmente:
+# O ejecutando los comandos por separado:
 python3 update_metrics.py
 python3 -m http.server 8000
 ```
@@ -108,7 +110,7 @@ flowchart TD
     end
 
     subgraph Despliegue
-        GHA["GitHub Actions (Cron 2x/día)"]
+        GHA["GitHub Actions (Cron 1x/día)"]
         GHA --> EXT
         GHA -->|force_orphan: true| GHP["Rama gh-pages"]
         GHP --> LIVE["GitHub Pages"]
@@ -126,8 +128,9 @@ flowchart TD
 ├── config.json                # Configuración declarativa
 ├── .env.example               # Plantilla de variables de entorno
 ├── update_metrics.py          # Extractor de datos (Single Responsibility Principle)
-├── index.html                 # Interfaz visual reactiva
-├── data.json                  # Dataset compilado automáticamente
+├── index.html                 # Interfaz visual reactiva (Swiss Minimalist)
+├── Makefile                   # Comandos rápidos de desarrollo local
+├── CHANGELOG.md               # Registro histórico de versiones
 └── README.md                  # Documentación técnica
 ```
 
@@ -138,8 +141,14 @@ flowchart TD
 - **Frontend**: HTML5 Semántico, JavaScript Moderno (ESModules / Async Fetch).
 - **Estilos**: Tailwind CSS, tipografías Inter y JetBrains Mono.
 - **Gráficos**: Chart.js y Lucide Icons.
-- **Backend / Extractor**: Python 3.10+ (`dataclasses`, `argparse`, `logging`, `subprocess`).
+- **Backend / Extractor**: Python 3.10+ (`dataclasses`, `pathlib`, `logging`, `subprocess`).
 - **Infraestructura**: GitHub CLI, GitHub Actions y GitHub Pages.
+
+---
+
+## Registro de Cambios
+
+Consulta el archivo [`CHANGELOG.md`](file:///CHANGELOG.md) para ver el historial detallado de cambios y versiones del proyecto.
 
 ---
 

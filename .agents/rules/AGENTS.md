@@ -31,3 +31,12 @@
 2. **Fuentes de Tráfico**: Mantener la normalización cualitativa de `referrers` (LinkedIn, Telegram, Google Search, X, GitHub).
 3. **Antigüedad Dinámica**: La fecha de antigüedad (`active_since` / `tagline`) debe ser siempre computada automáticamente por el extractor a partir del repositorio más antiguo.
 4. **Atribución Institucional**: Mantener en el footer la referencia permanente de origen impulsada por **Shellaquiles** (`https://shellaquiles.org` y `shellaquiles/stats`).
+
+---
+
+## 4. Versionado y Registro de Cambios
+1. **Single Source of Truth (`VERSION`)**: La versión del proyecto se define exclusivamente en el archivo plano `VERSION` en la raíz.
+2. **Sincronización de Release**: Al publicar una nueva versión o release:
+   - Actualizar el número en `VERSION` (ej. `1.1.0`).
+   - Registrar la versión, fecha y cambios en `CHANGELOG.md` (Keep a Changelog / SemVer).
+   - **No editar `index.html`**: El extractor inyecta la versión automáticamente en `data.json` y el frontend la renderiza dinámicamente.
