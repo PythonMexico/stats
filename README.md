@@ -17,18 +17,8 @@ Impulsado por la comunidad de **[shellaquiles.org](https://shellaquiles.org)**.
   </a>
 </p>
 
----
-
-## ¿Para qué sirve?
-
-GitHub muestra tu actividad reciente, pero no te da una vista global del impacto de tus proyectos. Este dashboard genera una página web pública y ligera con:
-
-- **Huella Digital**: Radar multieje con el balance de Stars, Forks, Commits, Clones y Visitas.
-- **Stats Globales**: Tabla interactiva para ordenar tus repositorios por cualquier métrica o fecha de creación.
-- **Por Repositorio**: Tarjetas individuales con stack técnico y enlaces a código/demos.
-- **Colaboradores y Core Team**: Reconocimiento a quienes aportan código a tus repos (sin bots).
-- **Captura para Redes Sociales**: Genera en automático una tarjeta `og-preview.png` en alta resolución (2400x1260 px) para compartir en Twitter/X o LinkedIn.
-- **Zero-Config**: Filtra en automático tus repos públicos propios (`type=source`) y se actualiza solo cada 24 horas vía GitHub Actions sin costo de servidores.
+> 💡 **Tu URL personal tras hacer Fork:** `https://<TU-USUARIO>.github.io/stats/`  
+> *(Por ejemplo, si tu usuario es `@pixelead0`, tu página se publicará en `https://pixelead0.github.io/stats/`).*
 
 ---
 
@@ -64,7 +54,22 @@ Cuando el workflow termine de ejecutarse (tarda ~1 minuto):
 2. **Tu Tarjeta Social**: Se habrá generado la miniatura `og-preview.png` (2400x1260 px) para compartir en redes.
 3. **Historial de ejecuciones**: Puedes ver el estado de cada corrida en la pestaña **Actions** de tu repositorio.
 
+> 📌 **Tip:** Agrega tu enlace `https://<TU_USUARIO>.github.io/stats/` en la sección **About** (en el engrane ⚙️ a la derecha de la portada de tu repo en GitHub) y marca la casilla *"Use your GitHub Pages website"*. Así tú y tus visitantes podrán entrar con 1 solo clic.
+
 A partir de este momento, tus métricas se actualizarán en automático todos los días a las **06:00 UTC**.
+
+---
+
+## ¿Qué incluye el dashboard?
+
+GitHub muestra tu actividad reciente, pero no te da una vista global del impacto de tus proyectos. Este dashboard genera una página web pública y ligera con:
+
+- **Huella Digital**: Radar multieje con el balance de Stars, Forks, Commits, Clones y Visitas.
+- **Stats Globales**: Tabla interactiva para ordenar tus repositorios por cualquier métrica o fecha de creación.
+- **Por Repositorio**: Tarjetas individuales con stack técnico y enlaces a código/demos.
+- **Colaboradores y Core Team**: Reconocimiento a quienes aportan código a tus repos (sin bots).
+- **Captura para Redes Sociales**: Genera en automático una tarjeta `og-preview.png` en alta resolución (2400x1260 px) para compartir en Twitter/X o LinkedIn.
+- **Zero-Config**: Filtra en automático tus repos públicos propios (`type=source`) y se actualiza solo cada 24 horas vía GitHub Actions sin costo de servidores.
 
 ---
 
