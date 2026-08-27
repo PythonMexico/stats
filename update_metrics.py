@@ -10,22 +10,57 @@ import json
 import os
 import re
 
-REPOS = [
-    'cron-quiles',
-    'tribuTACOS',
-    'shellaquiles-org',
-    'pandocquiles',
-    'KARNITAS',
-    'frases-chingonas'
-]
+def discover_repos():
+    """Descubre dinámicamente todos los repositorios públicos de la organización shellaquiles."""
+    try:
+        raw_list = json.loads(subprocess.check_output([
+            'gh', 'repo', 'list', 'shellaquiles',
+            '--json', 'name,isArchived,isFork,isPrivate',
+            '--limit', '100'
+        ]))
+        # Filtrar solo repositorios no archivados y públicos (excluyendo el repo de stats interno si se desea)
+        discovered = [
+            r['name'] for r in raw_list 
+            if not r.get('isArchived') and not r.get('isPrivate') and r['name'] != 'stats'
+        ]
+        return discovered
+    except Exception as e:
+        print(f"⚠️ Error al descubrir repositorios con 'gh repo list': {e}")
+        return ['cron-quiles', 'tribuTACOS', 'shellaquiles-org', 'pandocquiles', 'KARNITAS', 'frases-chingonas']
+
+def normalize_referrer(raw_name):
+    if not raw_name:
+        return 'Directo', 'globe'
+    
+    lower = raw_name.lower()
+    if 'linkedin' in lower:
+        return 'LinkedIn', 'share-2'
+    elif 'telegram' in lower or 't.me' in lower:
+        return 'Telegram', 'send'
+    elif 'google' in lower:
+        return 'Google Search', 'search'
+    elif 'github' in lower:
+        return 'GitHub', 'github'
+    elif 'twitter' in lower or 't.co' in lower or 'x.com' in lower:
+        return 'X (Twitter)', 'twitter'
+    elif 'facebook' in lower or 'fb' in lower:
+        return 'Facebook', 'share-2'
+    elif 'reddit' in lower:
+        return 'Reddit', 'message-square'
+    elif 'youtube' in lower:
+        return 'YouTube', 'video'
+    else:
+        return raw_name, 'globe'
 
 def fetch_metrics():
+    repos = discover_repos()
     full_data = []
     global_referrers = {}
     all_contributors = {}
+    print(f"📡 Descubiertos {len(repos)} repositorios: {', '.join(repos)}")
     print("📡 Obteniendo métricas, tráfico y contribuidores de GitHub...")
 
-    for repo in REPOS:
+    for repo in repos:
         print(f" -> Procesando {repo}...")
         try:
             repo_info = json.loads(subprocess.check_output([
@@ -48,15 +83,27 @@ def fetch_metrics():
         except:
             clones = {'count': 0, 'uniques': 0}
 
-        # Referrers
+        # Referrers agrupados y normalizados
+        normalized_repo_referrers = {}
         try:
-            referrers = json.loads(subprocess.check_output(['gh', 'api', f'repos/shellaquiles/{repo}/traffic/popular/referrers']))
-            for ref in referrers:
-                name = ref.get('referrer', 'Directo')
-                if name not in global_referrers:
-                    global_referrers[name] = {'name': name, 'views': 0, 'uniques': 0}
-                global_referrers[name]['views'] += ref.get('count', 0)
-                global_referrers[name]['uniques'] += ref.get('uniques', 0)
+            raw_referrers = json.loads(subprocess.check_output(['gh', 'api', f'repos/shellaquiles/{repo}/traffic/popular/referrers']))
+            for ref in raw_referrers:
+                raw_name = ref.get('referrer', 'Directo')
+                canonical_name, icon = normalize_referrer(raw_name)
+                
+                # Global
+                if canonical_name not in global_referrers:
+                    global_referrers[canonical_name] = {'name': canonical_name, 'views': 0, 'uniques': 0, 'icon': icon}
+                global_referrers[canonical_name]['views'] += ref.get('count', 0)
+                global_referrers[canonical_name]['uniques'] += ref.get('uniques', 0)
+
+                # Por repo
+                if canonical_name not in normalized_repo_referrers:
+                    normalized_repo_referrers[canonical_name] = {'referrer': canonical_name, 'count': 0, 'uniques': 0}
+                normalized_repo_referrers[canonical_name]['count'] += ref.get('count', 0)
+                normalized_repo_referrers[canonical_name]['uniques'] += ref.get('uniques', 0)
+
+            referrers = list(normalized_repo_referrers.values())
         except:
             referrers = []
 
@@ -101,19 +148,21 @@ def fetch_metrics():
             contrib_count = 1
 
         topics = [t['name'] for t in (repo_info.get('repositoryTopics') or [])]
+        lang = (repo_info.get('primaryLanguage') or {}).get('name', 'Shell')
         
         badge = None
         featured = False
-        accentColor = "border-t-[#1e3a8a]"
+        accentColor = "border-t-zinc-700"
         icon = "box"
+
         if repo == 'cron-quiles':
             featured = True
-            badge = "LÍDER DE TRÁFICO (+490 CLONES)"
+            badge = "LÍDER EN TRÁFICO (CLI)"
             accentColor = "border-t-[#1e3a8a]"
             icon = "calendar-sync"
         elif repo == 'tribuTACOS':
             featured = True
-            badge = "VIRAL EN LANZAMIENTO (10 ⭐)"
+            badge = "CFDI 4.0 / FISCAL"
             accentColor = "border-t-[#046a38]"
             icon = "calculator"
         elif repo == 'shellaquiles-org':
@@ -121,16 +170,30 @@ def fetch_metrics():
             badge = "PORTAL CENTRAL"
             icon = "globe"
         elif repo == 'pandocquiles':
-            badge = "TOP VISTAS (77 VISITAS)"
+            badge = "DOCS ENGINE"
             accentColor = "border-t-[#b45309]"
             icon = "file-text"
         elif repo == 'KARNITAS':
             accentColor = "border-t-[#1e3a8a]"
-            badge = "FRAMEWORK IA"
+            badge = "AGENT RUNTIME"
             icon = "cpu"
         elif repo == 'frases-chingonas':
             accentColor = "border-t-zinc-400"
             icon = "quote"
+        else:
+            # Asignación inteligente para cualquier repo nuevo futuro
+            if 'python' in lang.lower():
+                accentColor = "border-t-[#1e3a8a]"
+                icon = "code-2"
+            elif 'javascript' in lang.lower() or 'typescript' in lang.lower():
+                accentColor = "border-t-[#b45309]"
+                icon = "layout"
+            elif 'shell' in lang.lower():
+                accentColor = "border-t-[#046a38]"
+                icon = "terminal"
+            else:
+                accentColor = "border-t-zinc-600"
+                icon = "folder-git-2"
 
         full_data.append({
             'name': repo_info.get('name'),
@@ -142,7 +205,7 @@ def fetch_metrics():
             'forks': repo_info.get('forkCount', 0),
             'commits': total_commits,
             'contributors': contrib_count,
-            'language': (repo_info.get('primaryLanguage') or {}).get('name', 'Shell'),
+            'language': lang,
             'license': (repo_info.get('licenseInfo') or {}).get('name', 'None').replace(' License', '').replace('General Public v3.0', 'GPL-3.0').replace('General Public License', 'GPL'),
             'clones_14d': clones.get('count', 0),
             'clones_uniques_14d': clones.get('uniques', 0),
@@ -185,6 +248,7 @@ def fetch_metrics():
         total_releases = sum(d['releases'] for d in full_data)
         total_prs = sum(d['prs'] for d in full_data)
         total_contributors = len(sorted_contributors)
+        total_repos_count = len(full_data)
 
         # Actualizar contadores en HTML
         html = re.sub(r'id="kpi-stars">.*?</div>', f'id="kpi-stars">{total_stars} ⭐</div>', html)
@@ -196,7 +260,8 @@ def fetch_metrics():
         html = re.sub(r'id="kpi-views-uniques">.*?</div>', f'id="kpi-views-uniques">{total_views_uniques}</div>', html)
         html = re.sub(r'id="kpi-releases">.*?</div>', f'id="kpi-releases">{total_releases} Releases</div>', html)
         html = re.sub(r'id="kpi-prs">.*?</div>', f'id="kpi-prs">{total_prs} PRs</div>', html)
-        html = re.sub(r'id="kpi-contributors-count">.*?</div>', f'id="kpi-contributors-count">{total_contributors} Desarrolladores</div>', html)
+        html = re.sub(r'id="kpi-contributors-count">.*?</div>', f'id="kpi-contributors-count">{total_contributors} Colaboradores</div>', html)
+        html = re.sub(r'id="sidebar-repo-count">.*?</span>', f'id="sidebar-repo-count">{total_repos_count} REPOSITORIOS</span>', html)
 
         json_str = json.dumps(full_data, indent=4, ensure_ascii=False)
         html = re.sub(r'const data = \[.*?\];', f'const data = {json_str};', html, flags=re.DOTALL)
@@ -209,7 +274,7 @@ def fetch_metrics():
 
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(html)
-        print(f"✅ Dashboard tribuTACOS Style actualizado con contribuidores en {html_path}")
+        print(f"✅ Shellaquiles Stats dashboard actualizado exitosamente en {html_path}")
 
 if __name__ == '__main__':
     fetch_metrics()

@@ -1,37 +1,12 @@
 {
   "repos": [
     {
-      "name": "cron-quiles",
-      "description": "Agregador de calendarios tech (Meetup, Luma, ICS) que se actualiza solo, como buen cron.",
-      "url": "https://github.com/shellaquiles/cron-quiles",
-      "homepageUrl": "",
-      "created_at": "2025-12-29",
-      "stars": 12,
-      "forks": 11,
-      "commits": 321,
-      "contributors": 11,
-      "language": "Python",
-      "license": "MIT",
-      "clones_14d": 494,
-      "clones_uniques_14d": 291,
-      "views_14d": 3,
-      "uniques_14d": 3,
-      "releases": 9,
-      "prs": 30,
-      "featured": true,
-      "badge": "LÍDER DE TRÁFICO (+490 CLONES)",
-      "icon": "calendar-sync",
-      "accentColor": "border-t-[#1e3a8a]",
-      "topics": [],
-      "referrers": []
-    },
-    {
       "name": "tribuTACOS",
       "description": "🌮 Plataforma de Inteligencia Fiscal, Conciliación de Comprobantes Digitales (CFDI 3.3/4.0) y Simulación Analítica de Pre-Declaración Mensual y Anual para Personas Físicas (SAT México).",
       "url": "https://github.com/shellaquiles/tribuTACOS",
       "homepageUrl": "https://shellaquiles.org",
       "created_at": "2026-08-26",
-      "stars": 11,
+      "stars": 12,
       "forks": 4,
       "commits": 57,
       "contributors": 1,
@@ -44,7 +19,7 @@
       "releases": 0,
       "prs": 2,
       "featured": true,
-      "badge": "VIRAL EN LANZAMIENTO (10 ⭐)",
+      "badge": "CFDI 4.0 / FISCAL",
       "icon": "calculator",
       "accentColor": "border-t-[#046a38]",
       "topics": [
@@ -66,6 +41,108 @@
         "cfdi4"
       ],
       "referrers": []
+    },
+    {
+      "name": "cron-quiles",
+      "description": "Agregador de calendarios tech (Meetup, Luma, ICS) que se actualiza solo, como buen cron.",
+      "url": "https://github.com/shellaquiles/cron-quiles",
+      "homepageUrl": "",
+      "created_at": "2025-12-29",
+      "stars": 12,
+      "forks": 11,
+      "commits": 321,
+      "contributors": 11,
+      "language": "Python",
+      "license": "MIT",
+      "clones_14d": 494,
+      "clones_uniques_14d": 291,
+      "views_14d": 3,
+      "uniques_14d": 3,
+      "releases": 9,
+      "prs": 30,
+      "featured": true,
+      "badge": "LÍDER EN TRÁFICO (CLI)",
+      "icon": "calendar-sync",
+      "accentColor": "border-t-[#1e3a8a]",
+      "topics": [],
+      "referrers": []
+    },
+    {
+      "name": "pandocquiles",
+      "description": "Convertidor autónomo de documentación Markdown a PDF, HTML y Word con sincronización a Google Drive",
+      "url": "https://github.com/shellaquiles/pandocquiles",
+      "homepageUrl": "",
+      "created_at": "2026-08-20",
+      "stars": 4,
+      "forks": 0,
+      "commits": 8,
+      "contributors": 1,
+      "language": "Python",
+      "license": "MIT",
+      "clones_14d": 17,
+      "clones_uniques_14d": 15,
+      "views_14d": 77,
+      "uniques_14d": 32,
+      "releases": 3,
+      "prs": 3,
+      "featured": false,
+      "badge": "DOCS ENGINE",
+      "icon": "file-text",
+      "accentColor": "border-t-[#b45309]",
+      "topics": [],
+      "referrers": [
+        {
+          "referrer": "LinkedIn",
+          "count": 8,
+          "uniques": 5
+        },
+        {
+          "referrer": "Telegram",
+          "count": 3,
+          "uniques": 2
+        },
+        {
+          "referrer": "Google Search",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
+    },
+    {
+      "name": "KARNITAS",
+      "description": "Kernel Agentic Runtime Network for Intelligent Tasks & Automation Systems. Un estándar abierto para la gestión de contexto, memoria y automatización de agentes en equipos de desarrollo multidisciplinarios.",
+      "url": "https://github.com/shellaquiles/KARNITAS",
+      "homepageUrl": "",
+      "created_at": "2026-05-10",
+      "stars": 3,
+      "forks": 0,
+      "commits": 8,
+      "contributors": 1,
+      "language": "Shell",
+      "license": "MIT",
+      "clones_14d": 9,
+      "clones_uniques_14d": 9,
+      "views_14d": 11,
+      "uniques_14d": 6,
+      "releases": 0,
+      "prs": 2,
+      "featured": false,
+      "badge": "AGENT RUNTIME",
+      "icon": "cpu",
+      "accentColor": "border-t-[#1e3a8a]",
+      "topics": [],
+      "referrers": [
+        {
+          "referrer": "LinkedIn",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "referrer": "Telegram",
+          "count": 1,
+          "uniques": 1
+        }
+      ]
     },
     {
       "name": "shellaquiles-org",
@@ -91,93 +168,6 @@
       "accentColor": "border-t-zinc-800",
       "topics": [],
       "referrers": []
-    },
-    {
-      "name": "pandocquiles",
-      "description": "Convertidor autónomo de documentación Markdown a PDF, HTML y Word con sincronización a Google Drive",
-      "url": "https://github.com/shellaquiles/pandocquiles",
-      "homepageUrl": "",
-      "created_at": "2026-08-20",
-      "stars": 4,
-      "forks": 0,
-      "commits": 8,
-      "contributors": 1,
-      "language": "Python",
-      "license": "MIT",
-      "clones_14d": 17,
-      "clones_uniques_14d": 15,
-      "views_14d": 77,
-      "uniques_14d": 32,
-      "releases": 3,
-      "prs": 3,
-      "featured": false,
-      "badge": "TOP VISTAS (77 VISITAS)",
-      "icon": "file-text",
-      "accentColor": "border-t-[#b45309]",
-      "topics": [],
-      "referrers": [
-        {
-          "referrer": "linkedin.com",
-          "count": 6,
-          "uniques": 3
-        },
-        {
-          "referrer": "com.linkedin.android",
-          "count": 2,
-          "uniques": 2
-        },
-        {
-          "referrer": "web.telegram.org",
-          "count": 2,
-          "uniques": 1
-        },
-        {
-          "referrer": "Google",
-          "count": 1,
-          "uniques": 1
-        },
-        {
-          "referrer": "org.telegram.messenger.web",
-          "count": 1,
-          "uniques": 1
-        }
-      ]
-    },
-    {
-      "name": "KARNITAS",
-      "description": "Kernel Agentic Runtime Network for Intelligent Tasks & Automation Systems. Un estándar abierto para la gestión de contexto, memoria y automatización de agentes en equipos de desarrollo multidisciplinarios.",
-      "url": "https://github.com/shellaquiles/KARNITAS",
-      "homepageUrl": "",
-      "created_at": "2026-05-10",
-      "stars": 3,
-      "forks": 0,
-      "commits": 8,
-      "contributors": 1,
-      "language": "Shell",
-      "license": "MIT",
-      "clones_14d": 9,
-      "clones_uniques_14d": 9,
-      "views_14d": 11,
-      "uniques_14d": 6,
-      "releases": 0,
-      "prs": 2,
-      "featured": false,
-      "badge": "FRAMEWORK IA",
-      "icon": "cpu",
-      "accentColor": "border-t-[#1e3a8a]",
-      "topics": [],
-      "referrers": [
-        {
-          "referrer": "linkedin.com",
-          "count": 1,
-          "uniques": 1
-        },
-        {
-          "referrer": "org.telegram.messenger",
-          "count": 1,
-          "uniques": 1
-        }
-      ]
     },
     {
       "name": "frases-chingonas",
@@ -207,34 +197,22 @@
   ],
   "referrers": [
     {
-      "name": "linkedin.com",
-      "views": 7,
-      "uniques": 4
+      "name": "LinkedIn",
+      "views": 9,
+      "uniques": 6,
+      "icon": "share-2"
     },
     {
-      "name": "com.linkedin.android",
-      "views": 2,
-      "uniques": 2
+      "name": "Telegram",
+      "views": 4,
+      "uniques": 3,
+      "icon": "send"
     },
     {
-      "name": "web.telegram.org",
-      "views": 2,
-      "uniques": 1
-    },
-    {
-      "name": "Google",
+      "name": "Google Search",
       "views": 1,
-      "uniques": 1
-    },
-    {
-      "name": "org.telegram.messenger.web",
-      "views": 1,
-      "uniques": 1
-    },
-    {
-      "name": "org.telegram.messenger",
-      "views": 1,
-      "uniques": 1
+      "uniques": 1,
+      "icon": "search"
     }
   ],
   "contributors": [
@@ -245,11 +223,11 @@
       "contributions": 190,
       "repos_count": 6,
       "repos": [
-        "cron-quiles",
         "tribuTACOS",
-        "shellaquiles-org",
+        "cron-quiles",
         "pandocquiles",
         "KARNITAS",
+        "shellaquiles-org",
         "frases-chingonas"
       ]
     },
