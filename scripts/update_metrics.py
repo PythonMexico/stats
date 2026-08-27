@@ -498,6 +498,31 @@ class GitHubTelemetryExtractor:
             logger.critical("Failed writing output file '%s': %s", self.config.output_json, exc)
             raise TelemetryError(f"Could not write destination file: {self.config.output_json}") from exc
 
+        self._sync_index_html_meta(self.config.target)
+
+    def _sync_index_html_meta(self, target: str) -> None:
+        """Keep static OpenGraph meta tags in index.html in sync with the detected target user."""
+        index_html_path = Path(__file__).resolve().parent.parent / "index.html"
+        if not index_html_path.is_file():
+            return
+        try:
+            content = index_html_path.read_text(encoding="utf-8")
+            import re
+            content = re.sub(
+                r'<meta property="og:title" content="[^"]*" id="og-title" />',
+                f'<meta property="og:title" content="Estadísticas de @{target} en GitHub 📊 ¡Crea tu dashboard gratis!" id="og-title" />',
+                content
+            )
+            content = re.sub(
+                r'<meta name="twitter:title" content="[^"]*" id="twitter-title" />',
+                f'<meta name="twitter:title" content="Estadísticas de @{target} en GitHub 📊 ¡Crea tu dashboard gratis!" id="twitter-title" />',
+                content
+            )
+            index_html_path.write_text(content, encoding="utf-8")
+            logger.info("✔ Synced OpenGraph meta tags in index.html for target '@%s'", target)
+        except OSError as exc:
+            logger.warning("Could not sync index.html meta tags: %s", exc)
+
 
 def main() -> None:
     """CLI entrypoint with graceful exit codes."""
