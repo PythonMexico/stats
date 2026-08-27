@@ -96,7 +96,7 @@ class ExtractorConfig:
     title: str = "stats — Telemetría & Métricas Open Source"
     brand: BrandConfig = field(default_factory=BrandConfig)
     links: dict[str, str] = field(default_factory=dict)
-    exclude_repos: frozenset[str] = field(default_factory=lambda: frozenset({"stats"}))
+    exclude_repos: frozenset[str] = field(default_factory=frozenset)
     repo_overrides: dict[str, RepoVisualOverride] = field(default_factory=dict)
     output_json: Path = field(default_factory=lambda: Path("data.json"))
 
@@ -180,7 +180,7 @@ class ExtractorConfig:
         if env_exclude:
             exclude_repos = frozenset(r.strip() for r in env_exclude.split(",") if r.strip())
         else:
-            exclude_repos = frozenset(file_data.get("exclude_repos", ["stats"]))
+            exclude_repos = frozenset(file_data.get("exclude_repos", []))
 
         raw_overrides = file_data.get("custom_repo_overrides", {})
         repo_overrides = {
